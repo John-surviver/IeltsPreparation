@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Ielts Preparation</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">Home</string>
+    <string name="Info">Info</string>
+    <string name="reading">Reading</string>
+    <string name="image_icon">image icon</string>
+    <string name="title">Title</string>
+    <string name="reaping">Reaping</string>
+    <string name="listening">Listening</string>
+    <string name="writing">Writing</string>
+    <string name="_50">50%</string>
+    <string name="_80">80%</string>
+    <string name="_30">30%</string>
+</resources>
