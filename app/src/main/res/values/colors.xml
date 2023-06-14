@@ -4,4 +4,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="main_bg">#f3edd5</color>
     <color name="btn_color">#ffcc99</color>
+    <color name="selected_color">#FF5722</color>
+    <color name="unselected_color">#ffcc99</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
 </resources>

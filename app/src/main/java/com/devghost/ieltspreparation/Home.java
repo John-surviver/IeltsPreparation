@@ -2,12 +2,8 @@ package com.devghost.ieltspreparation;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +13,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.devghost.ieltspreparation.Grammar.GrammarList;
 import com.devghost.ieltspreparation.Listening.ListeningMenu;
 import com.devghost.ieltspreparation.Reading.ReadingMenu;
+import com.devghost.ieltspreparation.Speaking.SpeakingMenu;
+import com.devghost.ieltspreparation.Tips.TipsMenu;
+import com.devghost.ieltspreparation.Writing.WritingMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,7 +76,7 @@ public class Home extends Fragment {
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
             LayoutInflater layoutInflater = (LayoutInflater) requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
-            View myView = layoutInflater.inflate(R.layout.design_lay, viewGroup, false);
+            @SuppressLint("ViewHolder") View myView = layoutInflater.inflate(R.layout.design_lay, viewGroup, false);
             ImageView pic = myView.findViewById(R.id.pic_id);
             TextView Title = myView.findViewById(R.id.title_tv);
             LinearLayout linearLayout = myView.findViewById(R.id.secondLay);
@@ -87,6 +91,7 @@ public class Home extends Fragment {
             pic.setImageResource(Integer.parseInt(Objects.requireNonNull(Pic)));
 
             linearLayout.setOnClickListener(view1 -> {
+
 
                 if("1".equals(tag)){
                     FragmentManager fragment = requireActivity().getSupportFragmentManager();
@@ -103,16 +108,32 @@ public class Home extends Fragment {
                     fragmentTransaction.commit();
                 }
                 else if ("3".equals(tag)) {
-
+                    FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                    fragmentTransaction.replace(R.id.mainLay,new WritingMenu());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
                 }
                 else if ("4".equals(tag)) {
-
+                    FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                    fragmentTransaction.replace(R.id.mainLay,new SpeakingMenu());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
                 }
                 else if ("5".equals(tag)) {
-
+                    FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                    fragmentTransaction.replace(R.id.mainLay,new GrammarList());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
                 }
                 else if ("6".equals(tag)) {
-
+                    FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                    fragmentTransaction.replace(R.id.mainLay,new TipsMenu());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
                 }
             });
 
