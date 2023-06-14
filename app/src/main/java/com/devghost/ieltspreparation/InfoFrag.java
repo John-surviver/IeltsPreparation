@@ -13,7 +13,7 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 public class InfoFrag extends Fragment {
 
     View view;
-    CircularProgressBar progressBar1,progressBar2,progressBar3;
+    CircularProgressBar progressBar1,progressBar2,progressBar3,progressBar4,progressBar5;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -24,6 +24,8 @@ public class InfoFrag extends Fragment {
         progressBar1=view.findViewById(R.id.circularProgressBar);
         progressBar2=view.findViewById(R.id.circularProgressBar1);
         progressBar3=view.findViewById(R.id.circularProgressBar2);
+        progressBar4=view.findViewById(R.id.circularProgressBar4);
+        progressBar5=view.findViewById(R.id.circularProgressBar5);
 
         progressBar1.setProgress(50f);
         progressBar1.setProgressMax(100f);
@@ -33,6 +35,12 @@ public class InfoFrag extends Fragment {
 
         progressBar3.setProgress(30f);
         progressBar3.setProgressMax(100f);
+
+        progressBar4.setProgress(30f);
+        progressBar4.setProgressMax(100f);
+
+        progressBar5.setProgress(30f);
+        progressBar5.setProgressMax(100f);
 
 
         return view;

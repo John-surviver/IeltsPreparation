@@ -5,6 +5,8 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.devghost.ieltspreparation.Listening.ListeningMenu;
+import com.devghost.ieltspreparation.Reading.ReadingMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,6 +80,7 @@ public class Home extends Fragment {
             HashMap<String, String> hashMap = arrayList.get(position);
             String Pic = hashMap.get("pic");
             String title = hashMap.get("title");
+            String tag = hashMap.get("tag");
 
 
             Title.setText(title);
@@ -82,8 +88,32 @@ public class Home extends Fragment {
 
             linearLayout.setOnClickListener(view1 -> {
 
+                if("1".equals(tag)){
+                    FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                    fragmentTransaction.replace(R.id.mainLay,new ReadingMenu());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                }
+                else if ("2".equals(tag)) {
+                    FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                    fragmentTransaction.replace(R.id.mainLay,new ListeningMenu());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                }
+                else if ("3".equals(tag)) {
 
+                }
+                else if ("4".equals(tag)) {
 
+                }
+                else if ("5".equals(tag)) {
+
+                }
+                else if ("6".equals(tag)) {
+
+                }
             });
 
 
@@ -94,24 +124,41 @@ public class Home extends Fragment {
 
     private void createTable() {
         hashMap = new HashMap<>();
+        hashMap.put("tag","1");
         hashMap.put("pic", String.valueOf(R.drawable.read));
         hashMap.put("title", "Reading");
         arrayList.add(hashMap);
 
         hashMap = new HashMap<>();
+        hashMap.put("tag","2");
         hashMap.put("pic", String.valueOf(R.drawable.listening));
         hashMap.put("title", "Listening");
         arrayList.add(hashMap);
 
         hashMap = new HashMap<>();
+        hashMap.put("tag","3");
         hashMap.put("pic", String.valueOf(R.drawable.conversation));
         hashMap.put("title", "Speaking");
         arrayList.add(hashMap);
 
 
         hashMap = new HashMap<>();
+        hashMap.put("tag","4");
         hashMap.put("pic", String.valueOf(R.drawable.writing));
         hashMap.put("title", "Writing");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("tag","5");
+        hashMap.put("pic", String.valueOf(R.drawable.education));
+        hashMap.put("title", "Grammar");
+        arrayList.add(hashMap);
+
+
+        hashMap = new HashMap<>();
+        hashMap.put("tag","6");
+        hashMap.put("pic", String.valueOf(R.drawable.chat));
+        hashMap.put("title", "Tips And Tricks");
         arrayList.add(hashMap);
     }
 

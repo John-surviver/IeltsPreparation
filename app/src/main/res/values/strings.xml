@@ -13,4 +13,24 @@
     <string name="_50">50%</string>
     <string name="_80">80%</string>
     <string name="_30">30%</string>
+    <string name="your_progress">YOUR PROGRESS</string>
+    <string name="grammar">Grammar</string>
+    <string name="basic_level">Beginner Level</string>
+    <string name="advance_level">Advance Level</string>
+    <string name="speaking">Speaking</string>
+    <string name="item_list">Item List</string>
+    <string name="song_title">Song Title</string>
+    <string name="question">Questions</string>
+    <string name="answer_1">Answer 1</string>
+    <string name="answer_2">Answer 2</string>
+    <string name="answer_3">Anser 2</string>
+    <string name="answer_4">Anser 4</string>
+    <string name="next">Next</string>
+    <string name="_200">10</string>
+    <string name="_0_00">0.00</string>
+    <string name="_2_00">2.00</string>
+    <string name="up_coming_questions">Up coming Questions\nScroll up to see more</string>
+    <string name="intermediate_level">Intermediate level</string>
+    <string name="pasage_here">Pasage here</string>
+    <string name="title2">TITLE</string>
 </resources>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp">
+
+    <LinearLayout
+        android:id="@+id/upComingLay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        >
+        <TextView
+            android:id="@+id/q_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/question"
+            android:gravity="center"
+            android:textSize="15sp"
+            />
+
+        <TextView
+            android:id="@+id/q_op1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1.Option A"
+            android:layout_marginStart="5dp"
+            />
+
+        <TextView
+            android:id="@+id/q_op2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2.Option B"
+            android:layout_marginStart="5dp"
+            />
+
+        <TextView
+            android:id="@+id/q_op3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="3.Option C"
+            android:layout_marginStart="5dp"
+            />
+
+        <TextView
+            android:id="@+id/q_op4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="4.Option D"
+            android:layout_marginStart="5dp"
+            />
+
+
+    </LinearLayout>
+</LinearLayout>
