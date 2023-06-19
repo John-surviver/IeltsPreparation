@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Listening.ListeningListOne">
+    tools:context=".Listening.ListeningListOne"
+    android:background="@color/main_bg"
+    >
 
     <!-- TODO: Update blank fragment layout -->
     <ListView

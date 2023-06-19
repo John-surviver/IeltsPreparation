@@ -102,13 +102,61 @@ public class ReadingList3 extends Fragment {
         hashMap = new HashMap<>();
         hashMap.put("title", "Advanced Reading 1");
         hashMap.put("title2", "Passage: Antarctica");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/a_1.json");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/a_1.json");
         arrayList.add(hashMap);
 
         hashMap = new HashMap<>();
         hashMap.put("title", "Advanced Reading 2");
         hashMap.put("title2", "Library Card");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/b_2.json");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/a_2.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Advanced Reading 3");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/a_3.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Advanced Reading 4");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/a_4.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Advanced Reading 5");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/a_5.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Advanced Reading 6");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/a_6.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Advanced Reading 7");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/a_7.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Advanced Reading 8");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/a_8.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Advanced Reading 9");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/a_9.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Advanced Reading 10");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/a_10.json");
         arrayList.add(hashMap);
 
     }

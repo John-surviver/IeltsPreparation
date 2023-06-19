@@ -110,14 +110,14 @@ public class Home extends Fragment {
                 else if ("3".equals(tag)) {
                     FragmentManager fragment = requireActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction=fragment.beginTransaction();
-                    fragmentTransaction.replace(R.id.mainLay,new WritingMenu());
+                    fragmentTransaction.replace(R.id.mainLay,new SpeakingMenu());
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                 }
                 else if ("4".equals(tag)) {
                     FragmentManager fragment = requireActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction=fragment.beginTransaction();
-                    fragmentTransaction.replace(R.id.mainLay,new SpeakingMenu());
+                    fragmentTransaction.replace(R.id.mainLay,new WritingMenu());
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                 }
@@ -144,17 +144,23 @@ public class Home extends Fragment {
 
 
     private void createTable() {
-        hashMap = new HashMap<>();
-        hashMap.put("tag","1");
-        hashMap.put("pic", String.valueOf(R.drawable.read));
-        hashMap.put("title", "Reading");
-        arrayList.add(hashMap);
+
 
         hashMap = new HashMap<>();
         hashMap.put("tag","2");
         hashMap.put("pic", String.valueOf(R.drawable.listening));
         hashMap.put("title", "Listening");
         arrayList.add(hashMap);
+
+
+
+        hashMap = new HashMap<>();
+        hashMap.put("tag","1");
+        hashMap.put("pic", String.valueOf(R.drawable.read));
+        hashMap.put("title", "Reading");
+        arrayList.add(hashMap);
+
+
 
         hashMap = new HashMap<>();
         hashMap.put("tag","3");

@@ -1,14 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Speaking.SpeakingFrag">
+    tools:context=".Speaking.SpeakingFrag"
+    android:background="@color/main_bg"
+    >
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <TextView
+            android:background="@color/btn_color"
+            android:gravity="center"
+            android:id="@+id/speaking_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Speaking"
+            android:layout_margin="15dp"
+            android:textSize="20sp"
+            android:textStyle="bold|italic"
 
-</FrameLayout>
+            />
+
+        <TextView
+            android:id="@+id/speaking_des_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/speaking"
+            android:layout_margin="20dp"
+            android:textSize="20sp"
+            android:textStyle="bold|italic"
+            android:gravity="center"
+
+            />
+
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/speaking_ans_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/speaking"
+            android:layout_margin="15dp"
+            android:textSize="20sp"
+            android:textStyle="bold|italic"
+            android:gravity="center"
+
+            />
+
+        <Button
+            android:id="@+id/speaking_ans_btn"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_margin="20dp"
+            android:text="@string/show_hint"
+            />
+
+
+
+    </LinearLayout>
+
+</ScrollView>

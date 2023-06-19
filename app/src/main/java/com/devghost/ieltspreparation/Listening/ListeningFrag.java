@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -44,6 +43,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 
 public class ListeningFrag extends Fragment {
@@ -69,15 +69,11 @@ public class ListeningFrag extends Fragment {
     LottieAnimationView lottieAnimationView;
     //firebase
 
-    String email;
     int POINTS = 0;
-    int totalPoints;
-
-    String loggedEmail;
 
     // Declare a MediaPlayer object reference
     MediaPlayer mp,mp2,mediaPlayer;
-    private RadioButton selectedRadioButton;
+
 
     ImageButton playbtn;
     SeekBar seekBar;
@@ -167,7 +163,7 @@ public class ListeningFrag extends Fragment {
         // get the json from server
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(requireContext());
-        String url = "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_1_adv.json";
+        String url = ADV;
 
         // Request a string response from the provided URL.
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
@@ -274,13 +270,14 @@ public class ListeningFrag extends Fragment {
         // Convert milliseconds to minutes and seconds
         int minutes = currentPosition / (1000 * 60);
         int seconds = (currentPosition / 1000) % 60;
-        String currentPositionStr = String.format("%02d:%02d", minutes, seconds);
+        String currentPositionStr = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+
 
         // Update the TextView with the current position
-        // Convert milliseconds to minutes and seconds for total duration
+// Convert milliseconds to minutes and seconds for total duration
         int totalMinutes = totalDuration / (1000 * 60);
         int totalSeconds = (totalDuration / 1000) % 60;
-        String totalDurationStr = String.format("%02d:%02d", totalMinutes, totalSeconds);
+        String totalDurationStr = String.format(Locale.getDefault(), "%02d:%02d", totalMinutes, totalSeconds);
 
         // Update the TextViews with the current position and total duration
         time_remaining.setText(currentPositionStr);
@@ -298,29 +295,39 @@ public class ListeningFrag extends Fragment {
 
 
     //load Questions
-
     private void loadQuestions() {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, QUESTION_URL, null,
                 response -> {
                     try {
                         JSONArray jsonArray = response.getJSONArray("questions");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            String questionText = jsonObject.getString("question");
-                            JSONArray answerOptionsArray = jsonObject.getJSONArray("answerOptions");
-                            String[] answerOptions = new String[answerOptionsArray.length()];
-                            for (int j = 0; j < answerOptionsArray.length(); j++) {
-                                answerOptions[j] = answerOptionsArray.getString(j);
+
+                        if (jsonArray.length() == 0) {
+                            // Show toast for "Coming soon"
+                            new AlertDialog.Builder(requireContext())
+                                    .setTitle("Coming Soon")
+                                    .setMessage("Please wait few days")
+                                    .create()
+                                    .show();
+
+                        } else {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                String questionText = jsonObject.getString("question");
+                                JSONArray answerOptionsArray = jsonObject.getJSONArray("answerOptions");
+                                String[] answerOptions = new String[answerOptionsArray.length()];
+                                for (int j = 0; j < answerOptionsArray.length(); j++) {
+                                    answerOptions[j] = answerOptionsArray.getString(j);
+                                }
+                                String correctAnswer = jsonObject.getString("correctAnswer");
+                                String picLink = jsonObject.getString("link");
+                                Question question = new Question(questionText, answerOptions, correctAnswer, picLink);
+                                questions.add(question);
                             }
-                            String correctAnswer = jsonObject.getString("correctAnswer");
-                            String picLink = jsonObject.getString("link");
-                            Question question = new Question(questionText, answerOptions, correctAnswer, picLink);
-                            questions.add(question);
+                            cachedQuestions.addAll(questions);
+                            // Shuffle the questions list
+                            // Collections.shuffle(cachedQuestions);
+                            displayQuestion();
                         }
-                        cachedQuestions.addAll(questions);
-                        // Shuffle the questions list
-                       // Collections.shuffle(cachedQuestions);
-                        displayQuestion();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -332,6 +339,8 @@ public class ListeningFrag extends Fragment {
 
         Volley.newRequestQueue(requireContext()).add(request);
     }
+
+
 
     private void displayQuestion() {
         //assign ids
@@ -396,17 +405,8 @@ public class ListeningFrag extends Fragment {
                         mp2.start();
                     }
 
-                    if(wrong==3){
-                       /* new AlertDialog.Builder(requireContext())
-                                .setTitle("Game Over")
-                                .setMessage("Play again")
-                                .create()
-                                .show();*/
+                    //write code for wrong answer if needed
 
-                        showScore();
-                        new Handler().postDelayed(this::goBack, 2000);
-
-                    }
                 }
                 show_score.setText(MessageFormat.format("Points: {0}", POINTS));
 
@@ -427,13 +427,11 @@ public class ListeningFrag extends Fragment {
         });
     }
 
-    private void goBack() {
-        requireActivity().onBackPressed();
-    }
+
 
     private void showScore() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Quiz Result");
+        builder.setTitle("Result");
         builder.setMessage("Score: " + score + "/" + cachedQuestions.size());
         builder.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();

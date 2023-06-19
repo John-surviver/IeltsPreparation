@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+        <LinearLayout
+            android:id="@+id/writing_design_lay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+
+            <TextView
+                android:id="@+id/writing_title_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/demo"
+                android:layout_margin="15dp"
+                android:textSize="25sp"
+                android:textStyle="bold|italic"
+                />
+
+            <com.jsibbold.zoomage.ZoomageView
+                android:id="@+id/q_pic2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_launcher_foreground"
+                app:zoomage_restrictBounds="false"
+                app:zoomage_animateOnReset="true"
+                app:zoomage_autoResetMode="UNDER"
+                app:zoomage_autoCenter="true"
+                app:zoomage_zoomable="true"
+                app:zoomage_translatable="true"
+                app:zoomage_minScale="0.6"
+                app:zoomage_maxScale="8"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/zoom_in_the_picture_if_needed"
+                android:textColor="@color/black"
+                />
+
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/writing_answer_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/demo"
+                android:layout_margin="15dp"
+                android:textSize="25sp"
+                android:textStyle="bold|italic"
+                android:fontFamily="serif-monospace"
+                />
+
+            <Button
+                android:layout_margin="15dp"
+                android:visibility="visible"
+                android:id="@+id/writing_show_ans_btn"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/show_demo_answer"
+                />
+
+        </LinearLayout>
+
+
+
+
+
+</ScrollView>

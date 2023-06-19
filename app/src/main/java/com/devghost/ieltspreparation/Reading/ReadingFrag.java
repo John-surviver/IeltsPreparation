@@ -1,10 +1,7 @@
 package com.devghost.ieltspreparation.Reading;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,23 +9,28 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.devghost.ieltspreparation.Home;
 import com.devghost.ieltspreparation.Question;
 import com.devghost.ieltspreparation.R;
 import com.jsibbold.zoomage.ZoomageView;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.SecureRandom;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,17 +52,16 @@ public class ReadingFrag extends Fragment {
 
     TextView show_score,main_Q_tv,title_name_tv;
     ZoomageView q_pic;
-    LinearLayout linearLayout;
+    LinearLayout linearLayout,readingLay;
     LottieAnimationView lottieAnimationView;
     //firebase
 
-    String email;
     int POINTS = 0;
-    int totalPoints;
-
-    String loggedEmail;
 
     View view;
+
+    MediaPlayer mp,mp2;
+    ScrollView scrollView;
 
 
 
@@ -77,6 +78,10 @@ public class ReadingFrag extends Fragment {
         show_score=view.findViewById(R.id.score_tv2);
         main_Q_tv=view.findViewById(R.id.main_Q_tv);
         title_name_tv=view.findViewById(R.id.title_name_tv);
+        readingLay=view.findViewById(R.id.ReadingLay);
+        scrollView=view.findViewById(R.id.scrollView2);
+        mp = MediaPlayer.create(requireContext(), R.raw.rightanswer);
+        mp2 = MediaPlayer.create(requireContext(), R.raw.wronganswer);
 
 
 
@@ -97,26 +102,37 @@ public class ReadingFrag extends Fragment {
                 response -> {
                     try {
                         JSONArray jsonArray = response.getJSONArray("questions");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            String questionText = jsonObject.getString("question");
-                            JSONArray answerOptionsArray = jsonObject.getJSONArray("answerOptions");
-                            String[] answerOptions = new String[answerOptionsArray.length()];
-                            for (int j = 0; j < answerOptionsArray.length(); j++) {
-                                answerOptions[j] = answerOptionsArray.getString(j);
-                            }
-                            String correctAnswer = jsonObject.getString("correctAnswer");
-                            String picLink = jsonObject.getString("link");
-                            String mainQ = jsonObject.getString("main_q");
-                            Question question = new Question(questionText, answerOptions, correctAnswer, picLink);
-                            questions.add(question);
 
-                            main_Q_tv.setText(mainQ);
+                        if (jsonArray.length() == 0) {
+                            // Show toast for "Coming soon"
+                            new AlertDialog.Builder(requireContext())
+                                    .setTitle("Coming Soon")
+                                    .setMessage("Please wait few Days")
+                                    .create()
+                                    .show();
+
+                        } else {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                String questionText = jsonObject.getString("question");
+                                JSONArray answerOptionsArray = jsonObject.getJSONArray("answerOptions");
+                                String[] answerOptions = new String[answerOptionsArray.length()];
+                                for (int j = 0; j < answerOptionsArray.length(); j++) {
+                                    answerOptions[j] = answerOptionsArray.getString(j);
+                                }
+                                String correctAnswer = jsonObject.getString("correctAnswer");
+                                String picLink = jsonObject.getString("link");
+                                String des = jsonObject.getString("main_q");
+                                Question question = new Question(questionText, answerOptions, correctAnswer, picLink);
+                                questions.add(question);
+
+                                main_Q_tv.setText(des);
+                            }
+                            cachedQuestions.addAll(questions);
+                            // Shuffle the questions list
+                            // Collections.shuffle(cachedQuestions);
+                            displayQuestion();
                         }
-                        cachedQuestions.addAll(questions);
-                        // Shuffle the questions list
-                        // Collections.shuffle(cachedQuestions);
-                        displayQuestion();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -149,14 +165,14 @@ public class ReadingFrag extends Fragment {
         String link = question.getPicLink();
         if (link.equals("0")) {
             q_pic.setVisibility(View.GONE);
-        } else {
+        }/* else {
             q_pic.setVisibility(View.VISIBLE);
             Picasso.get()
                     .load(link)
                     .placeholder(R.drawable.loading)
                     .error(R.drawable.download)
                     .into(q_pic);
-        }
+        }*/
 
         Button nextButton = view.findViewById(R.id.next_button2);
         nextButton.setOnClickListener(v -> {
@@ -176,38 +192,30 @@ public class ReadingFrag extends Fragment {
                     score++;
                     POINTS += coin;
                     //  updatePoints();
-                    linearLayout.setVisibility(View.GONE);
+                    readingLay.setVisibility(View.GONE);
+                    scrollView.setVisibility(View.GONE);
                     lottieAnimationView.setAnimation(R.raw.correct);
                     lottieAnimationView.setVisibility(View.VISIBLE);
-                   /* if (mp != null && mp2 != null) {
+                    if (mp != null && mp2 != null) {
                         mp.start();
-                    }*/
+                    }
                 } else {
                     wrong++;
 
-                    linearLayout.setVisibility(View.GONE);
+                    readingLay.setVisibility(View.GONE);
+                    scrollView.setVisibility(View.GONE);
                     lottieAnimationView.setAnimation(R.raw.wrong);
                     lottieAnimationView.setVisibility(View.VISIBLE);
-                   /* if (mp != null && mp2 != null) {
+                    if (mp != null && mp2 != null) {
                         mp2.start();
-                    }*/
+                    }
 
-                   /* if(wrong==3){
-                       *//* new AlertDialog.Builder(requireContext())
-                                .setTitle("Game Over")
-                                .setMessage("Play again")
-                                .create()
-                                .show();*//*
-
-                        showScore();
-                        new Handler().postDelayed(this::goBack, 2000);
-
-                    }*/
                 }
                 show_score.setText(MessageFormat.format("Points: {0}", POINTS));
 
                 new Handler().postDelayed(() -> {
-                    linearLayout.setVisibility(View.VISIBLE);
+                    readingLay.setVisibility(View.VISIBLE);
+                    scrollView.setVisibility(View.VISIBLE);
                     lottieAnimationView.setVisibility(View.GONE);
                     currentQuestion++;
                     if (currentQuestion < cachedQuestions.size()) {
@@ -223,18 +231,33 @@ public class ReadingFrag extends Fragment {
         });
     }
 
-    private void goBack() {
-        requireActivity().onBackPressed();
-    }
-
     private void showScore() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Quiz Result");
+        builder.setTitle("Test Result");
         builder.setMessage("Score: " + score + "/" + cachedQuestions.size());
-        builder.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
+
+        // Inflate the layout containing the LottieAnimationView
+        View view = LayoutInflater.from(requireContext()).inflate(R.layout.lottie_view, null);
+        LottieAnimationView lottieView = view.findViewById(R.id.lottie_view);
+
+        builder.setView(view);
+
         AlertDialog dialog = builder.create();
         dialog.show();
+
+        // Start the Lottie animation
+        lottieView.setVisibility(View.VISIBLE);
+
+        lottieView.setOnClickListener(v -> {
+            dialog.dismiss();
+            FragmentManager fragment = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+            fragmentTransaction.add(R.id.mainLay,new Home());
+            fragmentTransaction.commit();
+        });
     }
+
+
 
 
 }

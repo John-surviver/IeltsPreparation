@@ -3,64 +3,63 @@ package com.devghost.ieltspreparation.Speaking;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.devghost.ieltspreparation.R;
+import com.devghost.ieltspreparation.Writing.WritingList1;
+import com.devghost.ieltspreparation.Writing.WritingList2;
+import com.devghost.ieltspreparation.Writing.WritingList3;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SpeakingMenu#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SpeakingMenu extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class SpeakingMenu extends Fragment implements View.OnClickListener {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public SpeakingMenu() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SpeakingMenu.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SpeakingMenu newInstance(String param1, String param2) {
-        SpeakingMenu fragment = new SpeakingMenu();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
+    View view;
+    LinearLayout beginner,intermediate,advanced;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_speaking_menu, container, false);
+        view = inflater.inflate(R.layout.fragment_writing_menu, container, false);
+
+        beginner=view.findViewById(R.id.basic_writing_btn);
+        intermediate=view.findViewById(R.id.intermediate_writing_btn);
+        advanced=view.findViewById(R.id.advanced_writing_btn);
+
+        beginner.setOnClickListener(this);
+        intermediate.setOnClickListener(this);
+        advanced.setOnClickListener(this);
+
+        return view;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId()==R.id.basic_writing_btn){
+            FragmentManager fragment = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+            fragmentTransaction.replace(R.id.mainLay,new Speaking1());
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
+        else if(v.getId()==R.id.intermediate_writing_btn) {
+            FragmentManager fragment = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+            fragmentTransaction.replace(R.id.mainLay,new Speaking2());
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
+        else if (v.getId()==R.id.advanced_writing_btn){
+            FragmentManager fragment = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+            fragmentTransaction.replace(R.id.mainLay,new Speaking3());
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
     }
 }

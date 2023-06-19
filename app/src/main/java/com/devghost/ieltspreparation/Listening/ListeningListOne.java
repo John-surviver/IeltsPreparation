@@ -76,6 +76,7 @@ public class ListeningListOne extends Fragment {
             String Link = hashMap.get("link");
             String AudioUrl = hashMap.get("url");
             String Title2 = hashMap.get("title2");
+            String adv = hashMap.get("adv");
 
             title.setText(Title);
 
@@ -86,6 +87,7 @@ public class ListeningListOne extends Fragment {
                 ListeningFrag.QUESTION_URL=Link;
                 ListeningFrag.TITLE=Title2;
                 ListeningFrag.AUDIO_URL=AudioUrl;
+                ListeningFrag.ADV=adv;
                 FragmentManager fragment = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction=fragment.beginTransaction();
                 fragmentTransaction.replace(R.id.mainLay,new ListeningFrag());
@@ -105,15 +107,81 @@ public class ListeningListOne extends Fragment {
         hashMap = new HashMap<>();
         hashMap.put("title", "Beginner Listening 1");
         hashMap.put("title2", "Job information");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_1.json");
-        hashMap.put("url","https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_1.mp3");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_1.json");
+        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_1.mp3");
+        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_1_adv.json");
         arrayList.add(hashMap);
 
         hashMap = new HashMap<>();
         hashMap.put("title", "Beginner Listening 2");
         hashMap.put("title2", "Library Card");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_2.json");
-        hashMap.put("url","https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_2.mp3");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_2.json");
+        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_2.mp3");
+        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_2_adv.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Beginner Listening 3");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_3.json");
+        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_3.mp3");
+        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_3_adv.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Beginner Listening 4");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_4.json");
+        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_4.mp3");
+        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_4_adv.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Beginner Listening 5");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_5.json");
+        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_5.mp3");
+        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_5_adv.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Beginner Listening 6");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_6.json");
+        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_6.mp3");
+        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_6_adv.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Beginner Listening 7");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_7.json");
+        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_7.mp3");
+        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_7_adv.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Beginner Listening 8");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_8.json");
+        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_8.mp3");
+        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_8_adv.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Beginner Listening 9");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_9.json");
+        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_9.mp3");
+        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_9_adv.json");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Beginner Listening 10");
+        hashMap.put("title2", "Library Card");
+        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_10.json");
+        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_10.mp3");
+        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_10_adv.json");
         arrayList.add(hashMap);
 
     }

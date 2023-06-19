@@ -75,7 +75,7 @@ public class ReadingList2 extends Fragment {
             String Link = hashMap.get("link");
             String Title2 = hashMap.get("title2");
 
-            title.setText(Title);
+            title.setText(Title2);
 
 
 
@@ -101,15 +101,72 @@ public class ReadingList2 extends Fragment {
     private void createTable() {
         hashMap = new HashMap<>();
         hashMap.put("title", "Intermediate Reading 1");
-        hashMap.put("title2", "Passage: Antarctica");
+        hashMap.put("title2", "The Impact of Plastic Pollution");
         hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/i_1.json");
         arrayList.add(hashMap);
 
         hashMap = new HashMap<>();
         hashMap.put("title", "Intermediate Reading 2");
-        hashMap.put("title2", "Library Card");
+        hashMap.put("title2", "The Impact of Plastic Pollution 2");
         hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/i_2.json");
         arrayList.add(hashMap);
+
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Intermediate Reading 2");
+        hashMap.put("title2", "The Importance of Renewable Energy");
+        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/i_3.json");
+        arrayList.add(hashMap);
+
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Intermediate Reading 2");
+        hashMap.put("title2", "The Benefits of Outdoor Education");
+        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/i_4.json");
+        arrayList.add(hashMap);
+
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Intermediate Reading 2");
+        hashMap.put("title2", "The Impact of Climate Change on Wildlife");
+        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/i_5.json");
+        arrayList.add(hashMap);
+
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Intermediate Reading 2");
+        hashMap.put("title2", "The Effects of Exercise on Mental Health");
+        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/i_6.json");
+        arrayList.add(hashMap);
+
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Intermediate Reading 2");
+        hashMap.put("title2", "The popularity of online shopping");
+        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/i_7.json");
+        arrayList.add(hashMap);
+
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Intermediate Reading 2");
+        hashMap.put("title2", "Technology in Education");
+        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/i_8.json");
+        arrayList.add(hashMap);
+
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Intermediate Reading 2");
+        hashMap.put("title2", "Biodiversity Loss and its Impact on Ecosystems");
+        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/i_9.json");
+        arrayList.add(hashMap);
+
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "Intermediate Reading 2");
+        hashMap.put("title2", "The Great Barrier Reef");
+        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/i_10.json");
+        arrayList.add(hashMap);
+
 
     }
 }
