@@ -14,11 +14,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.devghost.ieltspreparation.Listening.ListeningFrag;
-import com.devghost.ieltspreparation.Listening.ListeningListOne;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.devghost.ieltspreparation.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,20 +38,65 @@ public class ReadingList1 extends Fragment {
     HashMap<String, String> hashMap;
    myAdapter listAdapter;
 
+    ProgressBar progressBar;
+
+    public static String LOAD_LINK="";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_reading_list1, container, false);
+        view = inflater.inflate(R.layout.listening_list, container, false);
 
-        listView=view.findViewById(R.id.basic_reading_list);
+        listView=view.findViewById(R.id.basic_listening_list);
+        progressBar=view.findViewById(R.id.loading_list);
 
         if (listAdapter == null) {
-            createTable();
             listAdapter = new myAdapter();
         }
         listView.setAdapter(listAdapter);
+        arrayList.clear();
+
+
+        // get the json from server
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+        String url = LOAD_LINK;
+
+        // Request a string response from the provided URL.
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
+            progressBar.setVisibility(View.GONE);
+            try {
+
+                for(int x= 0 ; x<response.length(); x++){
+                    JSONObject jsonObject = response.getJSONObject(x);
+                    String words = jsonObject.getString("name");
+                    String id = jsonObject.getString("id");
+                    String passage = jsonObject.getString("passage");
+                    String link = jsonObject.getString("link");
+
+
+                    hashMap = new HashMap<>();
+                    hashMap.put("title",words);
+                    hashMap.put("id",id);
+                    hashMap.put("passage",passage);
+                    hashMap.put("link",link);
+                    arrayList.add(hashMap);
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+            //  progressBar.setVisibility(View.GONE);
+            Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show();
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(jsonArrayRequest);
+
 
 
 
@@ -76,18 +128,20 @@ public class ReadingList1 extends Fragment {
             LinearLayout linearLayout = myView.findViewById(R.id.list_lay);
 
             HashMap<String, String> hashMap = arrayList.get(position);
-            String Title = hashMap.get("title");
+            String Name = hashMap.get("title");
             String Link = hashMap.get("link");
-            String Title2 = hashMap.get("title2");
+            String Passage = hashMap.get("passage");
 
-            title.setText(Title2);
+            title.setText(Name);
 
 
 
             linearLayout.setOnClickListener(view1 -> {
 
                 ReadingFrag.QUESTION_URL=Link;
-                ReadingFrag.TITLE=Title2;
+                ReadingFrag.TITLE=Name;
+                ReadingFrag.PASSAGE=Passage;
+
                 FragmentManager fragment = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction=fragment.beginTransaction();
                 fragmentTransaction.replace(R.id.mainLay,new ReadingFrag());
@@ -101,78 +155,4 @@ public class ReadingList1 extends Fragment {
         }
     }
 
-
-
-    private void createTable() {
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Reading 1");
-        hashMap.put("title2", "Passage: Antarctica");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/b_1.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Reading 2");
-        hashMap.put("title2", "Water Conservation");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/b_2.json");
-        arrayList.add(hashMap);
-
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Reading 3");
-        hashMap.put("title2", "The Benefits of Outdoor Exercise");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/b_3.json");
-        arrayList.add(hashMap);
-
-
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Reading 4");
-        hashMap.put("title2", "The Benefits of Exercise");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/b_4.json");
-        arrayList.add(hashMap);
-
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Reading 5");
-        hashMap.put("title2", "The Vitality of the Amazon Rainforest");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/b_5.json");
-        arrayList.add(hashMap);
-
-
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Reading 6");
-        hashMap.put("title2", "Exercise for Health and Happiness");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/b_6.json");
-        arrayList.add(hashMap);
-
-
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Reading 7");
-        hashMap.put("title2", "Honeybees: Nature's Vital Pollinators");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/b_7.json");
-        arrayList.add(hashMap);
-
-
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Reading 8");
-        hashMap.put("title2", "Evolving Beauty: Cultural Shifts and Modern Influences");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/b_8.json");
-        arrayList.add(hashMap);
-
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Reading 9");
-        hashMap.put("title2", "The Effects of Climate Change on Wildlife");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/b_9.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Reading 10");
-        hashMap.put("title2", "The Importance of Sleep");
-        hashMap.put("link","https://worldgalleryinc.com/apps/ielts_preparation/reading_questions/b_10.json");
-        arrayList.add(hashMap);
-    }
 }

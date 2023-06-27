@@ -3,6 +3,7 @@ package com.devghost.ieltspreparation;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -79,7 +80,7 @@ public class Home extends Fragment {
             @SuppressLint("ViewHolder") View myView = layoutInflater.inflate(R.layout.design_lay, viewGroup, false);
             ImageView pic = myView.findViewById(R.id.pic_id);
             TextView Title = myView.findViewById(R.id.title_tv);
-            LinearLayout linearLayout = myView.findViewById(R.id.secondLay);
+            RelativeLayout linearLayout = myView.findViewById(R.id.secondLay);
 
             HashMap<String, String> hashMap = arrayList.get(position);
             String Pic = hashMap.get("pic");
@@ -135,6 +136,21 @@ public class Home extends Fragment {
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                 }
+                else if ("7".equals(tag)) {
+                    FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                    fragmentTransaction.replace(R.id.mainLay,new IdomsAndPhrases());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                }
+                else if ("8".equals(tag)) {
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Coming Soon")
+                            .setMessage("This feature is coming in Next Update")
+                            .create()
+                            .show();
+
+                }
             });
 
 
@@ -176,6 +192,12 @@ public class Home extends Fragment {
         arrayList.add(hashMap);
 
         hashMap = new HashMap<>();
+        hashMap.put("tag","7");
+        hashMap.put("pic", String.valueOf(R.drawable.language));
+        hashMap.put("title", "Idioms and Phrases");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
         hashMap.put("tag","5");
         hashMap.put("pic", String.valueOf(R.drawable.education));
         hashMap.put("title", "Grammar");
@@ -187,6 +209,14 @@ public class Home extends Fragment {
         hashMap.put("pic", String.valueOf(R.drawable.chat));
         hashMap.put("title", "Tips And Tricks");
         arrayList.add(hashMap);
+
+
+        hashMap = new HashMap<>();
+        hashMap.put("tag","8");
+        hashMap.put("pic", String.valueOf(R.drawable.exam));
+        hashMap.put("title", "Mock Test");
+        arrayList.add(hashMap);
+
     }
 
 

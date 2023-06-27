@@ -8,8 +8,14 @@
         />
 
     <item
-        android:title="@string/Info"
+        android:title="@string/profile"
         android:id="@+id/info_nav"
-        android:icon="@drawable/info"
+        android:icon="@drawable/profile"
+        />
+
+    <item
+        android:title="@string/ranking"
+        android:id="@+id/rank_menu"
+        android:icon="@drawable/rank"
         />
 </menu>

@@ -22,9 +22,16 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.devghost.ieltspreparation.Models.DatabaseHelper;
 import com.devghost.ieltspreparation.Home;
-import com.devghost.ieltspreparation.Question;
+import com.devghost.ieltspreparation.Models.Question;
 import com.devghost.ieltspreparation.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.jsibbold.zoomage.ZoomageView;
 
 import org.json.JSONArray;
@@ -33,23 +40,21 @@ import org.json.JSONObject;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ReadingFrag extends Fragment {
 
     public static String TITLE = "";
-
     public static  String QUESTION_URL = "";
-
     public static int coin = 0;
     private final List<Question> questions = new ArrayList<>();
     private final List<Question> cachedQuestions = new ArrayList<>();
     private int currentQuestion = 0;
-
     int score = 0;
     int wrong = 0;
-
     TextView show_score,main_Q_tv,title_name_tv;
     ZoomageView q_pic;
     LinearLayout linearLayout,readingLay;
@@ -57,12 +62,22 @@ public class ReadingFrag extends Fragment {
     //firebase
 
     int POINTS = 0;
-
     View view;
-
     MediaPlayer mp,mp2;
     ScrollView scrollView;
+    public static String PASSAGE = "";
 
+    private DatabaseHelper databaseHelper;
+
+    //--------------------------------------------
+
+    private FirebaseUser currentUser;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore db;
+
+    private int totalPoints;
+
+    private String loggedEmail;
 
 
     @Override
@@ -82,7 +97,18 @@ public class ReadingFrag extends Fragment {
         scrollView=view.findViewById(R.id.scrollView2);
         mp = MediaPlayer.create(requireContext(), R.raw.rightanswer);
         mp2 = MediaPlayer.create(requireContext(), R.raw.wronganswer);
+        databaseHelper = new DatabaseHelper(requireContext());
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
 
+        if (currentUser == null) {
+            Toast.makeText(requireContext(), "Login to Save the Points", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            loggedEmail = currentUser.getEmail();
+            getPoints();
+        }
 
 
         //load questions
@@ -93,9 +119,13 @@ public class ReadingFrag extends Fragment {
         }
 
         title_name_tv.setText(TITLE);
+        main_Q_tv.setText(PASSAGE);
 
         return view;
     }
+
+
+
 
     private void loadQuestions() {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, QUESTION_URL, null,
@@ -122,11 +152,10 @@ public class ReadingFrag extends Fragment {
                                 }
                                 String correctAnswer = jsonObject.getString("correctAnswer");
                                 String picLink = jsonObject.getString("link");
-                                String des = jsonObject.getString("main_q");
                                 Question question = new Question(questionText, answerOptions, correctAnswer, picLink);
                                 questions.add(question);
 
-                                main_Q_tv.setText(des);
+
                             }
                             cachedQuestions.addAll(questions);
                             // Shuffle the questions list
@@ -165,14 +194,8 @@ public class ReadingFrag extends Fragment {
         String link = question.getPicLink();
         if (link.equals("0")) {
             q_pic.setVisibility(View.GONE);
-        }/* else {
-            q_pic.setVisibility(View.VISIBLE);
-            Picasso.get()
-                    .load(link)
-                    .placeholder(R.drawable.loading)
-                    .error(R.drawable.download)
-                    .into(q_pic);
-        }*/
+        }
+
 
         Button nextButton = view.findViewById(R.id.next_button2);
         nextButton.setOnClickListener(v -> {
@@ -202,6 +225,10 @@ public class ReadingFrag extends Fragment {
                 } else {
                     wrong++;
 
+                    String correctAns = question.getCorrectAnswer();
+
+                    Toast.makeText(requireContext(), "Correct Answer Is :" + correctAns, Toast.LENGTH_LONG).show();
+
                     readingLay.setVisibility(View.GONE);
                     scrollView.setVisibility(View.GONE);
                     lottieAnimationView.setAnimation(R.raw.wrong);
@@ -223,6 +250,7 @@ public class ReadingFrag extends Fragment {
                         // clearRadioButtons();
                     } else {
                         showScore();
+
                     }
                 }, 2000);
             } else {
@@ -234,16 +262,38 @@ public class ReadingFrag extends Fragment {
     private void showScore() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Test Result");
-        builder.setMessage("Score: " + score + "/" + cachedQuestions.size());
+       // builder.setMessage("Score: " + score + "/" + cachedQuestions.size());
 
         // Inflate the layout containing the LottieAnimationView
         View view = LayoutInflater.from(requireContext()).inflate(R.layout.lottie_view, null);
         LottieAnimationView lottieView = view.findViewById(R.id.lottie_view);
+        TextView textView = view.findViewById(R.id.show_score_tv);
 
         builder.setView(view);
 
+        textView.setText(MessageFormat.format("Score: {0}/{1}", score, cachedQuestions.size()));
+
+
+        // Save the scores to the database
+        int[] Scores = databaseHelper.getScores();
+
+        Scores[0]+=Scores[0]+2;
+
+        saveScores(Scores);
+
+        if (currentUser != null) {
+            POINTS += 50;
+            updatePoints();
+        }
+
+
+
+
+
+
         AlertDialog dialog = builder.create();
         dialog.show();
+
 
         // Start the Lottie animation
         lottieView.setVisibility(View.VISIBLE);
@@ -252,12 +302,52 @@ public class ReadingFrag extends Fragment {
             dialog.dismiss();
             FragmentManager fragment = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction=fragment.beginTransaction();
-            fragmentTransaction.add(R.id.mainLay,new Home());
+            fragmentTransaction.replace(R.id.mainLay,new ReadingMenu());
             fragmentTransaction.commit();
         });
     }
 
 
+    private void saveScores(int[] scores) {
+        databaseHelper.saveScores(scores);
+    }
 
+    private void getPoints() {
+        // Check if points are already cached
+        if (totalPoints != 0) {
+            POINTS += totalPoints;
+            return;
+        }
+
+        db.collection("Users").document(loggedEmail).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    String pointsString = documentSnapshot.getString("points");
+                    totalPoints = Integer.parseInt(pointsString);
+                    POINTS += totalPoints;
+                }
+            } else {
+                Toast.makeText(getActivity(), "Failed to retrieve points", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to retrieve points", Toast.LENGTH_SHORT).show());
+    }
+
+    private void updatePoints() {
+        String updatedPoints = String.valueOf(POINTS);
+        Map<String, Object> data = new HashMap<>();
+        data.put("points", updatedPoints);
+
+        DocumentReference userRef = db.collection("Users").document(loggedEmail);
+
+        WriteBatch batch = db.batch();
+        batch.update(userRef, data);
+        batch.commit()
+                .addOnSuccessListener(unused -> {
+                    totalPoints = POINTS; // Update the cached points
+                    Toast.makeText(getActivity(), "Points Added " , Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to update points", Toast.LENGTH_SHORT).show());
+    }
 
 }

@@ -5,47 +5,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="260dp">
+    android:layout_height="180dp">
 
 
-    <androidx.cardview.widget.CardView
+    <soup.neumorphism.NeumorphCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardElevation="10dp"
-        app:cardCornerRadius="20dp"
-        android:layout_margin="10dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardMaxElevation="12dp"
-        app:cardPreventCornerOverlap="true"
-        app:cardUseCompatPadding="false"
+        style="@style/Widget.Neumorph.CardView"
+        app:neumorph_shadowElevation="6dp"
+        app:neumorph_shadowColorLight="#454343"
+        app:neumorph_lightSource="leftTop"
+        app:neumorph_shapeType="flat"
+        app:neumorph_inset="10dp"
+        app:neumorph_insetStart="10dp"
+        app:neumorph_insetEnd="10dp"
+        app:neumorph_insetTop="10dp"
+        app:neumorph_insetBottom="10dp"
+
         >
 
-        <LinearLayout
+        <RelativeLayout
+            android:background="@color/main_bg"
             android:id="@+id/secondLay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
             tools:ignore="UseCompoundDrawables">
             <ImageView
                 android:id="@+id/pic_id"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:src="@drawable/read"
+                android:layout_centerInParent="true"
+                android:scaleType="fitXY"
                 android:contentDescription="@string/image_icon" />
             <TextView
+                android:layout_alignParentBottom="true"
                 android:id="@+id/title_tv"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/title"
                 android:layout_marginTop="15dp"
                 android:textSize="18sp"
                 android:fontFamily="serif-monospace"
                 android:textStyle="bold"
+                android:gravity="center"
+                android:layout_margin="10dp"
                 />
 
-        </LinearLayout>
+        </RelativeLayout>
 
-    </androidx.cardview.widget.CardView>
+    </soup.neumorphism.NeumorphCardView>
 
 </LinearLayout>

@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.IeltsPreparation" parent="Theme.Material3.DayNight">
+    <style name="Base.Theme.IeltsPreparation" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
        <!--  <item name="colorPrimary">@color/main_bg</item>-->
 
@@ -15,9 +15,7 @@
         <item name="android:statusBarColor">@color/main_bg</item>
         <!-- Customize your theme here. -->
 
-        <!-- Add action bar support -->
-        <item name="windowActionBar">true</item>
-        <item name="windowNoTitle">false</item>
+
     </style>
 
     <style name="Theme.IeltsPreparation" parent="Base.Theme.IeltsPreparation" />

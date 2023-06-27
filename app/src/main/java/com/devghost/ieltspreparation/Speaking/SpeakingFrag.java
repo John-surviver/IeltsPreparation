@@ -2,7 +2,6 @@ package com.devghost.ieltspreparation.Speaking;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -10,18 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.devghost.ieltspreparation.Models.DatabaseHelper;
 import com.devghost.ieltspreparation.R;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SpeakingFrag extends Fragment {
 
@@ -29,8 +29,14 @@ public class SpeakingFrag extends Fragment {
     Button btn;
     View view;
     public static String SPEAKING_URL ="";
+    public static int ID = 0;
 
     String Ans;
+
+    HashMap<String, String> hashMap;
+
+    ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
+    DatabaseHelper databaseHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,47 +46,61 @@ public class SpeakingFrag extends Fragment {
 
         //assignIds
         assignIds();
+        databaseHelper = new DatabaseHelper(requireContext());
+
+        // Save the scores to the database
+        int[] Scores = databaseHelper.getScores();
+
+        Scores[2]+=Scores[2]+2;
+
+        saveScores(Scores);
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());
         String url = SPEAKING_URL;
 
-        // Request a JSON object response from the provided URL.
-        // ...
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                response -> {
-                    try {
 
-                        // Access the JSON values from the response
-                        String title = response.getString("title");
-                        String des = response.getString("des");
-                        Ans = response.getString("ans");
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
+//            progressBar.setVisibility(View.GONE);
+            try {
 
-
-                        if(title.isEmpty() || Ans.isEmpty() || des.isEmpty()){
-                            new AlertDialog.Builder(requireContext())
-                                    .setTitle("Coming Soon")
-                                    .setMessage("check after few days")
-                                    .create()
-                                    .show();
-
-                        }
-                        else {
-                            tvTitle.setText(MessageFormat.format("Topic {0}", title));
-                            tvDes.setText(des);
-
-                        }
+                for(int x= 0 ; x<response.length(); x++){
+                    JSONObject jsonObject = response.getJSONObject(x);
+                    String title = jsonObject.getString("title");
+                    String name = jsonObject.getString("name");
+                    String ans = jsonObject.getString("ans");
 
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                },
-                error -> Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show());
-// ...
+                    hashMap = new HashMap<>();
+                    hashMap.put("title",title);
+                    hashMap.put("name",name);
+                    hashMap.put("ans",ans);
+                    arrayList.add(hashMap);
 
+
+                    //   String array = String.valueOf(arrayList.get(Integer.parseInt(ID)));
+
+                }
+
+                int id = ID-1;
+                HashMap<String, String> hashMap = arrayList.get(id);
+                String Titles = hashMap.get("title");
+                String Name = hashMap.get("name");
+                Ans = hashMap.get("ans");
+
+                tvTitle.setText(Name);
+                tvDes.setText(Titles);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+            // progressBar.setVisibility(View.GONE);
+        });
 
         // Add the request to the RequestQueue.
-        queue.add(jsonObjectRequest);
+        queue.add(jsonArrayRequest);
+
 
 
         btn.setOnClickListener(v -> {
@@ -97,5 +117,9 @@ public class SpeakingFrag extends Fragment {
         tvDes=view.findViewById(R.id.speaking_des_tv);
         tvAns=view.findViewById(R.id.speaking_ans_tv);
         btn=view.findViewById(R.id.speaking_ans_btn);
+    }
+
+    private void saveScores(int[] scores) {
+        databaseHelper.saveScores(scores);
     }
 }

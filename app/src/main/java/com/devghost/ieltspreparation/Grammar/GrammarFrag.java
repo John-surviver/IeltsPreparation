@@ -14,12 +14,14 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.devghost.ieltspreparation.Models.DatabaseHelper;
 import com.devghost.ieltspreparation.R;
 public class GrammarFrag extends Fragment {
 
     WebView webView;
     public static String webLink = "";
     View view;
+    private DatabaseHelper databaseHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -28,7 +30,15 @@ public class GrammarFrag extends Fragment {
         view = inflater.inflate(R.layout.fragment_grammar, container, false);
 
         webView=view.findViewById(R.id.loadWebId);
+        databaseHelper = new DatabaseHelper(requireContext());
         loadWebSettings();
+        // Save the scores to the database
+        int[] Scores = databaseHelper.getScores();
+
+        Scores[4]+=Scores[4]+2;
+
+        saveScores(Scores);
+
 
         webView.loadUrl(webLink);
 
@@ -61,5 +71,7 @@ public class GrammarFrag extends Fragment {
         webView.getSettings().setUserAgentString("Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.14 (KHTML, like Gecko) Mobile/12F70");
     }
 
-
+    private void saveScores(int[] scores) {
+        databaseHelper.saveScores(scores);
+    }
 }

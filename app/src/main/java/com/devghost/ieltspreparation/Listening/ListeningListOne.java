@@ -14,9 +14,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.devghost.ieltspreparation.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,20 +38,63 @@ public class ListeningListOne extends Fragment {
     ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
     HashMap<String, String> hashMap;
     myAdapter listAdapter;
+    ProgressBar progressBar;
+
+    public static String LOAD_LINK="";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_listening_list_one, container, false);
+        view = inflater.inflate(R.layout.listening_list, container, false);
 
         listView=view.findViewById(R.id.basic_listening_list);
+        progressBar=view.findViewById(R.id.loading_list);
 
         if (listAdapter == null) {
-            createTable();
             listAdapter = new myAdapter();
         }
         listView.setAdapter(listAdapter);
+        arrayList.clear();
+
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+        String url = LOAD_LINK;
+
+        // Request a string response from the provided URL.
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
+            progressBar.setVisibility(View.GONE);
+            try {
+
+                for(int x= 0 ; x<response.length(); x++){
+                    JSONObject jsonObject = response.getJSONObject(x);
+                    String words = jsonObject.getString("name");
+                    String id = jsonObject.getString("id");
+                    String audio = jsonObject.getString("audio");
+                    String link = jsonObject.getString("link");
+                    String pic = jsonObject.getString("pic");
+
+
+                    hashMap = new HashMap<>();
+                    hashMap.put("name",words);
+                    hashMap.put("id",id);
+                    hashMap.put("audio",audio);
+                    hashMap.put("link",link);
+                    hashMap.put("pic",pic);
+                    arrayList.add(hashMap);
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+            //  progressBar.setVisibility(View.GONE);
+            Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show();
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(jsonArrayRequest);
+
 
         return  view;
     }
@@ -72,22 +124,22 @@ public class ListeningListOne extends Fragment {
             LinearLayout linearLayout = myView.findViewById(R.id.list_lay);
 
             HashMap<String, String> hashMap = arrayList.get(position);
-            String Title = hashMap.get("title");
+            String Name = hashMap.get("name");
             String Link = hashMap.get("link");
-            String AudioUrl = hashMap.get("url");
-            String Title2 = hashMap.get("title2");
+            String AudioUrl = hashMap.get("audio");
+            String Pic = hashMap.get("pic");
             String adv = hashMap.get("adv");
 
-            title.setText(Title);
+            title.setText(Name);
 
 
 
             linearLayout.setOnClickListener(view1 -> {
 
                 ListeningFrag.QUESTION_URL=Link;
-                ListeningFrag.TITLE=Title2;
                 ListeningFrag.AUDIO_URL=AudioUrl;
                 ListeningFrag.ADV=adv;
+                ListeningFrag.PIC_LINK=Pic;
                 FragmentManager fragment = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction=fragment.beginTransaction();
                 fragmentTransaction.replace(R.id.mainLay,new ListeningFrag());
@@ -99,91 +151,6 @@ public class ListeningListOne extends Fragment {
 
             return myView;
         }
-    }
-
-
-
-    private void createTable() {
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Listening 1");
-        hashMap.put("title2", "Job information");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_1.json");
-        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_1.mp3");
-        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_1_adv.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Listening 2");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_2.json");
-        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_2.mp3");
-        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_2_adv.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Listening 3");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_3.json");
-        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_3.mp3");
-        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_3_adv.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Listening 4");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_4.json");
-        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_4.mp3");
-        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_4_adv.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Listening 5");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_5.json");
-        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_5.mp3");
-        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_5_adv.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Listening 6");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_6.json");
-        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_6.mp3");
-        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_6_adv.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Listening 7");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_7.json");
-        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_7.mp3");
-        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_7_adv.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Listening 8");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_8.json");
-        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_8.mp3");
-        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_8_adv.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Listening 9");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_9.json");
-        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_9.mp3");
-        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_9_adv.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Listening 10");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_10.json");
-        hashMap.put("url", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/b_10.mp3");
-        hashMap.put("adv", "https://worldgalleryinc.com/apps/ielts_preparation/listening_questions/set_10_adv.json");
-        arrayList.add(hashMap);
-
     }
 
 

@@ -14,11 +14,20 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.devghost.ieltspreparation.R;
 import com.devghost.ieltspreparation.Reading.ReadingFrag;
 import com.devghost.ieltspreparation.Reading.ReadingList1;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,20 +40,59 @@ public class WritingList1 extends Fragment {
     ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
     HashMap<String, String> hashMap;
     myAdapter listAdapter;
+    ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_writing_list1, container, false);
+        view = inflater.inflate(R.layout.listening_list, container, false);
 
-        listView=view.findViewById(R.id.basic_writing_list);
+        listView=view.findViewById(R.id.basic_listening_list);
+        progressBar=view.findViewById(R.id.loading_list);
 
         if (listAdapter == null) {
-            createTable();
             listAdapter = new myAdapter();
         }
         listView.setAdapter(listAdapter);
+        arrayList.clear();
+
+        // get the json from server
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+        String url = "https://codemind.live/apps/ielts/writing/get.php";
+
+        // Request a string response from the provided URL.
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
+            progressBar.setVisibility(View.GONE);
+            try {
+
+                for(int x= 0 ; x<response.length(); x++){
+                    JSONObject jsonObject = response.getJSONObject(x);
+                    String words = jsonObject.getString("name");
+                    String id = jsonObject.getString("id");
+
+
+                    hashMap = new HashMap<>();
+                    hashMap.put("title",words);
+                    hashMap.put("id",id);
+                    arrayList.add(hashMap);
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+          //  progressBar.setVisibility(View.GONE);
+            Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show();
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(jsonArrayRequest);
+
+
+
 
         return view;
     }
@@ -65,6 +113,7 @@ public class WritingList1 extends Fragment {
             return 0;
         }
 
+
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
             LayoutInflater layoutInflater = (LayoutInflater) requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -73,92 +122,33 @@ public class WritingList1 extends Fragment {
             LinearLayout linearLayout = myView.findViewById(R.id.list_lay);
 
             HashMap<String, String> hashMap = arrayList.get(position);
-            String Title = hashMap.get("title");
-            String Link = hashMap.get("link");
-            String Title2 = hashMap.get("title2");
+            String titleValue = hashMap.get("title");
+            String idValue = hashMap.get("id");
 
-            title.setText(Title);
-
-
+            title.setText(titleValue);
 
             linearLayout.setOnClickListener(view1 -> {
-
-                WritingFrag.WRITING_URL=Link;
-                FragmentManager fragment = requireActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction=fragment.beginTransaction();
-                fragmentTransaction.replace(R.id.mainLay,new WritingFrag());
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-
+                assert idValue != null;
+                if (!idValue.isEmpty()) {
+                    try {
+                        int number = Integer.parseInt(idValue);
+                        WritingFrag.ID = number;
+                        WritingFrag.WRITING_URL="https://codemind.live/apps/ielts/writing/get.php";
+                        FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragment.beginTransaction();
+                        fragmentTransaction.replace(R.id.mainLay, new WritingFrag());
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        // Handle invalid number format
+                    }
+                }
             });
-
 
             return myView;
         }
-    }
-
-    private void createTable(){
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Writing 1");
-        hashMap.put("title2", "Passage: Antarctica");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/writing_questions/b_1.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Writing 2");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/writing_questions/b_2.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Writing 3");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/writing_questions/b_3.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Writing 4");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/writing_questions/b_4.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Writing 5");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/writing_questions/b_5.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Writing 6");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/writing_questions/b_6.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Writing 7");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/writing_questions/b_7.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Writing 8");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/writing_questions/b_8.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Writing 9");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/writing_questions/b_9.json");
-        arrayList.add(hashMap);
-
-        hashMap = new HashMap<>();
-        hashMap.put("title", "Beginner Writing 10");
-        hashMap.put("title2", "Library Card");
-        hashMap.put("link", "https://worldgalleryinc.com/apps/ielts_preparation/writing_questions/b_10.json");
-        arrayList.add(hashMap);
-
 
     }
+
 }

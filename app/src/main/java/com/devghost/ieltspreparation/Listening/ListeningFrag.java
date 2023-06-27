@@ -1,8 +1,5 @@
 package com.devghost.ieltspreparation.Listening;
 
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-
-import android.annotation.SuppressLint;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -10,18 +7,19 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.Request;
@@ -29,8 +27,15 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.devghost.ieltspreparation.Question;
+import com.devghost.ieltspreparation.Models.DatabaseHelper;
+import com.devghost.ieltspreparation.Models.Question;
 import com.devghost.ieltspreparation.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.jsibbold.zoomage.ZoomageView;
 import com.squareup.picasso.Picasso;
 
@@ -44,6 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 
 public class ListeningFrag extends Fragment {
@@ -53,6 +59,7 @@ public class ListeningFrag extends Fragment {
 
     public static  String QUESTION_URL = "";
     public static String AUDIO_URL = "";
+    public static String PIC_LINK = "";
 
     public static String ADV = "";
     public static int coin = 0;
@@ -65,7 +72,7 @@ public class ListeningFrag extends Fragment {
 
     TextView show_score;
     ZoomageView q_pic;
-    LinearLayout linearLayout;
+    ScrollView linearLayout;
     LottieAnimationView lottieAnimationView;
     //firebase
 
@@ -78,17 +85,28 @@ public class ListeningFrag extends Fragment {
     ImageButton playbtn;
     SeekBar seekBar;
     private boolean isSeeking = false;
-    TextView time_remaining,total_time,song_title;
+    TextView time_remaining,total_time,song_title; //checkTv
 
     //----------------------------------------------------
     //list view for upcoming questions
     ListView listView;
-    ListAdapter listAdapter;
     ArrayList<HashMap<String,String>> arrayList = new ArrayList<>();
     HashMap <String,String> hashMap;
 
+    int NextQuestion=1;
     //----------------------------------------------------
 
+    private DatabaseHelper databaseHelper;
+
+    //---------------------------------------------------
+
+    private FirebaseUser currentUser;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore db;
+
+    private int totalPoints;
+
+    private String loggedEmail;
 
 
     @Override
@@ -108,6 +126,22 @@ public class ListeningFrag extends Fragment {
         total_time=view.findViewById(R.id.total_time);
         song_title=view.findViewById(R.id.song_title);
         listView=view.findViewById(R.id.upComingList);
+        databaseHelper = new DatabaseHelper(requireContext());
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
+        firebaseAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+
+        if (currentUser == null) {
+            Toast.makeText(requireContext(), "Login to Save the Points", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            loggedEmail = currentUser.getEmail();
+            getPoints();
+        }
+
+
 
 
         //load questions
@@ -172,26 +206,16 @@ public class ListeningFrag extends Fragment {
 
                 for(int x= 0 ; x<response.length(); x++){
                     JSONObject jsonObject = response.getJSONObject(x);
-                    String question = jsonObject.getString("q");
-                    String option_a = jsonObject.getString("a");
-                    String option_b = jsonObject.getString("b");
-                    String option_c = jsonObject.getString("c");
-                    String option_d = jsonObject.getString("d");
-
-
+                    String question = jsonObject.getString("NextQuestion");
 
                     hashMap = new HashMap<>();
-                    hashMap.put("q",question);
-                    hashMap.put("a",option_a);
-                    hashMap.put("b",option_b);
-                    hashMap.put("c",option_c);
-                    hashMap.put("d",option_d);
+                    hashMap.put("NextQuestion",question);
                     arrayList.add(hashMap);
 
 
+
+
                 }
-                listAdapter = new ListAdapter();
-                listView.setAdapter(listAdapter);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -294,6 +318,8 @@ public class ListeningFrag extends Fragment {
     //-----------------------------------------------
 
 
+
+
     //load Questions
     private void loadQuestions() {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, QUESTION_URL, null,
@@ -365,7 +391,7 @@ public class ListeningFrag extends Fragment {
         } else {
             q_pic.setVisibility(View.VISIBLE);
             Picasso.get()
-                    .load(link)
+                    .load(PIC_LINK)
                     .placeholder(R.drawable.loading)
                     .error(R.drawable.download)
                     .into(q_pic);
@@ -373,6 +399,26 @@ public class ListeningFrag extends Fragment {
 
         Button nextButton = view.findViewById(R.id.next_button);
         nextButton.setOnClickListener(v -> {
+
+            NextQuestion++;
+
+            if(NextQuestion >= arrayList.size())
+            {
+                NextQuestion=1;
+            }
+            HashMap<String, String> firstElement;
+            if (!arrayList.isEmpty()) {
+
+                firstElement = arrayList.get(NextQuestion);
+
+                // You can now access the values in the HashMap
+                // Use the question variable as needed
+                //checkTv.setText(MessageFormat.format("{0}", firstElement));
+            }
+
+
+
+
             if (answerRadioButton1.isChecked() || answerRadioButton2.isChecked() ||
                     answerRadioButton3.isChecked() || answerRadioButton4.isChecked()) {
                 String selectedAnswer = "";
@@ -398,6 +444,9 @@ public class ListeningFrag extends Fragment {
                 } else {
                     wrong++;
 
+                    String wrongAns= question.getCorrectAnswer();
+                    Toast.makeText(requireContext(), "Correct Answer is "+wrongAns, Toast.LENGTH_LONG).show();
+
                     linearLayout.setVisibility(View.GONE);
                     lottieAnimationView.setAnimation(R.raw.wrong);
                     lottieAnimationView.setVisibility(View.VISIBLE);
@@ -420,7 +469,7 @@ public class ListeningFrag extends Fragment {
                     } else {
                         showScore();
                     }
-                }, 2000);
+                }, 1000);
             } else {
                 Toast.makeText(requireContext(), "Please select an answer", Toast.LENGTH_SHORT).show();
             }
@@ -431,11 +480,52 @@ public class ListeningFrag extends Fragment {
 
     private void showScore() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Result");
-        builder.setMessage("Score: " + score + "/" + cachedQuestions.size());
-        builder.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
+        builder.setTitle("Test Result");
+        //builder.setMessage("Score: " + score + "/" + cachedQuestions.size());
+
+        // Inflate the layout containing the LottieAnimationView
+        View view = LayoutInflater.from(requireContext()).inflate(R.layout.lottie_view, null);
+        LottieAnimationView lottieView = view.findViewById(R.id.lottie_view);
+        TextView textView = view.findViewById(R.id.show_score_tv);
+
+
+        builder.setView(view);
+
+        textView.setText(MessageFormat.format("score: {0}/{1}", score, cachedQuestions.size()));
+
+        // Save the scores to the database
+
+        // Save the scores to the database
+        int[] Scores = databaseHelper.getScores();
+
+        Scores[1]+=Scores[1]+2;
+
+        saveScores(Scores);
+
+        if (firebaseAuth.getCurrentUser() == null) {
+            Toast.makeText(requireContext(), "Login for Loading Points", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            POINTS += 50;
+            updatePoints();
+        }
+
+
+        //-----------------------------------
+
         AlertDialog dialog = builder.create();
         dialog.show();
+
+        // Start the Lottie animation
+        lottieView.setVisibility(View.VISIBLE);
+
+        lottieView.setOnClickListener(v -> {
+            dialog.dismiss();
+            FragmentManager fragment = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+            fragmentTransaction.add(R.id.mainLay,new ListeningMenu());
+            fragmentTransaction.commit();
+        });
     }
 
     @Override
@@ -451,58 +541,48 @@ public class ListeningFrag extends Fragment {
         releaseMediaPlayer();
     }
 
+    private void saveScores(int[] scores) {
+        databaseHelper.saveScores(scores);
+    }
 
     //create base adapter
 
-    private class ListAdapter extends BaseAdapter {
-
-
-        @Override
-        public int getCount() {
-            return arrayList.size();
+    private void getPoints() {
+        // Check if points are already cached
+        if (totalPoints != 0) {
+            POINTS += totalPoints;
+            return;
         }
 
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View view, ViewGroup viewGroup) {
-            LayoutInflater layoutInflater = (LayoutInflater) requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
-            @SuppressLint("ViewHolder") View myView = layoutInflater.inflate(R.layout.up_coming_q_design,viewGroup,false);
-
-
-            TextView Question = myView.findViewById(R.id.q_name);
-            TextView Option_A = myView.findViewById(R.id.q_op1);
-            TextView Option_B = myView.findViewById(R.id.q_op2);
-            TextView Option_C = myView.findViewById(R.id.q_op3);
-            TextView Option_D = myView.findViewById(R.id.q_op4);
-           // LinearLayout linearLayout = myView.findViewById(R.id.upComingLay);
-
-
-
-            HashMap<String,String> hashMap= arrayList.get(position) ;
-            String Q = hashMap.get("q");
-            String A = hashMap.get("a");
-            String B = hashMap.get("b");
-            String C = hashMap.get("c");
-            String D = hashMap.get("d");
-
-            Question.setText(Q);
-            Option_A.setText(A);
-            Option_B.setText(B);
-            Option_C.setText(C);
-            Option_D.setText(D);
-
-
-
-            return myView;
-        }
+        db.collection("Users").document(loggedEmail).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    String pointsString = documentSnapshot.getString("points");
+                    totalPoints = Integer.parseInt(pointsString);
+                    POINTS += totalPoints;
+                }
+            } else {
+                Toast.makeText(getActivity(), "Failed to retrieve points", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to retrieve points", Toast.LENGTH_SHORT).show());
     }
+
+    private void updatePoints() {
+        String updatedPoints = String.valueOf(POINTS);
+        Map<String, Object> data = new HashMap<>();
+        data.put("points", updatedPoints);
+
+        DocumentReference userRef = db.collection("Users").document(loggedEmail);
+
+        WriteBatch batch = db.batch();
+        batch.update(userRef, data);
+        batch.commit()
+                .addOnSuccessListener(unused -> {
+                    totalPoints = POINTS; // Update the cached points
+                    Toast.makeText(getActivity(), "Points Added " , Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to update points", Toast.LENGTH_SHORT).show());
+    }
+
 }
