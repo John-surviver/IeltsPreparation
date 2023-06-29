@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -191,9 +192,12 @@ public class RankingFrag extends Fragment {
             TextView textViewPoints = convertView.findViewById(R.id.rank_user_points_tv);
             // ImageView userPic = convertView.findViewById(R.id.user_pic);
 
+            String rankNum = MessageFormat.format("{0}", position + 1);
+
             UserModel item = rankingList.get(position);
-            textViewName.setText(item.getName());
+            textViewName.setText(MessageFormat.format("{0}. {1}", rankNum, item.getName()));
             textViewPoints.setText(String.valueOf(item.getPoints()));
+
 
 
             // Load the profile picture using a library like Picasso, Glide, or any other image loading library

@@ -71,4 +71,13 @@
     <string name="item_1">item 1</string>
     <string name="_1">1</string>
     <string name="_date">28/06/2023</string>
+    <string name="mock_txt">Apart from this, there will be the opportunity for an IELTS mock test with the IELTS grading system by an Experience IELTS trainer at $1 Only. However, it can be free for regular users. You can buy using free coins \n</string>
+    <string name="buy_using_5000_coins">Buy using 5000 coins</string>
+    <string name="dont_have_enough_coins">Dont have enough Coins ?</string>
+    <string name="or">OR</string>
+    <string name="buy_with_1">Buy with 1$ only</string>
+    <string name="mail_us_on_nanalysisghost8_gmail_com_nour_teacher_will_verify_the_payment_reach_u_out_soon_nafter_you_mail">Mail Us on\nanalysisghost8@gmail.com\nOur Teacher will verify the payment reach u out soon\nAfter you mail</string>
+    <string name="click_to_mail">Click To Mail</string>
+    <string name="BannerAds">ca-app-pub-3654452118274560/1288952081</string>
+    <string name="full_screen_ad">ca-app-pub-3654452118274560/3615732527</string>
 </resources>

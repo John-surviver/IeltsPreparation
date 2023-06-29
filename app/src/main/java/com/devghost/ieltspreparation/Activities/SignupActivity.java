@@ -41,8 +41,11 @@ public class SignupActivity extends AppCompatActivity {
     TextView textView;
     UserList user;
     int POINTS =0;
+    int MOCK =0;
+    int AD =0;
     String points ="";
     String ad = "";
+    String mock="";
     FirebaseAuth mAuth=FirebaseAuth.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +135,8 @@ public class SignupActivity extends AppCompatActivity {
                     assert currentUser!=null;
                     String userUid = currentUser.getUid();
                     points=String.valueOf(POINTS);
+                    mock = String.valueOf(MOCK);
+                    ad = String.valueOf(AD);
 
                     Map<String,Object> userObj = new HashMap<>();
                     userObj.put("userId",userUid);
@@ -139,6 +144,7 @@ public class SignupActivity extends AppCompatActivity {
                     userObj.put("UserName",name);
                     userObj.put("points",points);
                     userObj.put("ad",ad);
+                    userObj.put("mock",mock);
 
 
                     db.collection("Users").document(email)

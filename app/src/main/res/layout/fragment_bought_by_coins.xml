@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BoughtByCoins"
+    android:gravity="center"
+    android:background="@color/main_bg"
+    android:orientation="vertical"
+    >
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_margin="20dp"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/mail_us_on_nanalysisghost8_gmail_com_nour_teacher_will_verify_the_payment_reach_u_out_soon_nafter_you_mail"
+        android:textSize="25sp"
+        />
+
+    <Button
+        android:id="@+id/clickToMail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/click_to_mail"
+        />
+
+</LinearLayout>

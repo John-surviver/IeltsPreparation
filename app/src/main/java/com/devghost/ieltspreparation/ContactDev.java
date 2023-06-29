@@ -1,11 +1,13 @@
 package com.devghost.ieltspreparation;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -47,6 +49,10 @@ public class ContactDev extends Fragment {
     ArrayList<HashMap<String,String>> arrayList = new ArrayList<>();
     HashMap<String,String> hashMap;
 
+    int ALREADY_RATED = 0;
+
+    FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -59,6 +65,14 @@ public class ContactDev extends Fragment {
         pp=view.findViewById(R.id.pp);
         listView=view.findViewById(R.id.recent_list);
 
+        loadData();
+        if(ALREADY_RATED>0){
+            RateUs.setVisibility(View.GONE);
+        }
+
+        if(firebaseAuth.getCurrentUser()==null){
+            logOut.setVisibility(View.GONE);
+        }
 
         contactDev.setOnClickListener(view -> {
             Toast.makeText(requireContext(), "Email Us , Select Your Email/Gmail App", Toast.LENGTH_LONG).show();
@@ -74,6 +88,8 @@ public class ContactDev extends Fragment {
             }
         });
         RateUs.setOnClickListener(v -> {
+            ALREADY_RATED+=1;
+            saveData();
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse("market://details?id=" + requireContext().getPackageName())));
@@ -128,6 +144,19 @@ public class ContactDev extends Fragment {
 
 
         return view;
+    }
+
+    private void saveData(){
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("info",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("data",ALREADY_RATED);
+        editor.apply();
+    }
+
+    private void loadData(){
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("info",MODE_PRIVATE);
+        int data = sharedPreferences.getInt("data",0);
+       ALREADY_RATED+=data;
     }
 
     private void logOut(){

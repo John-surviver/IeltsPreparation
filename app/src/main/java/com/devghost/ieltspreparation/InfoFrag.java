@@ -1,12 +1,9 @@
 package com.devghost.ieltspreparation;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -15,6 +12,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,7 +27,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.devghost.ieltspreparation.Models.DatabaseHelper;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -63,7 +60,6 @@ public class InfoFrag extends Fragment implements View.OnClickListener {
     StorageReference storageRef = storage.getReference();
 
     String loggedEmail;
-    int ALREADY_RATED = 0;
 
     CircleImageView profilepic;
 
@@ -72,7 +68,8 @@ public class InfoFrag extends Fragment implements View.OnClickListener {
 
     Context context;
     private DatabaseHelper databaseHelper ;
-    private FirebaseUser currentUser;
+
+    Button login;
 
 
     @Override
@@ -103,6 +100,7 @@ public class InfoFrag extends Fragment implements View.OnClickListener {
 
         signUpOrLoginBtn.setOnClickListener(this);
         settings.setOnClickListener(this);
+        login.setOnClickListener(this);
 
         // To load data
         loadImageBitmap(getContext());
@@ -176,17 +174,14 @@ public class InfoFrag extends Fragment implements View.OnClickListener {
         p4=view.findViewById(R.id.p4);
         p5=view.findViewById(R.id.p5);
         settings=view.findViewById(R.id.settings_id);
+        login=view.findViewById(R.id.login_signUp_btn);
 
         userName_tv = view.findViewById(R.id.userName_tv);
         profilepic = view.findViewById(R.id.profile_image);
     }
 
     private void loadProgress() {
-
-
         loadScores();
-
-
     }
 
     private void loadScores() {
@@ -260,7 +255,7 @@ public class InfoFrag extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.linearLayout4){
+        if(v.getId()==R.id.login_signUp_btn){
             startActivity(new Intent(requireContext(),LoginOrSignUp.class));
         }
         else if (v.getId()==R.id.settings_id) {

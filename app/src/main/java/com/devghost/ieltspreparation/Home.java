@@ -144,11 +144,11 @@ public class Home extends Fragment {
                     fragmentTransaction.commit();
                 }
                 else if ("8".equals(tag)) {
-                    new AlertDialog.Builder(requireContext())
-                            .setTitle("Coming Soon")
-                            .setMessage("This feature is coming in Next Update")
-                            .create()
-                            .show();
+                    FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                    fragmentTransaction.replace(R.id.mainLay,new MockTest());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
 
                 }
             });

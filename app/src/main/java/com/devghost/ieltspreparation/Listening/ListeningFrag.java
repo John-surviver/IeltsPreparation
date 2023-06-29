@@ -16,6 +16,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -30,6 +31,11 @@ import com.android.volley.toolbox.Volley;
 import com.devghost.ieltspreparation.Models.DatabaseHelper;
 import com.devghost.ieltspreparation.Models.Question;
 import com.devghost.ieltspreparation.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -77,6 +83,7 @@ public class ListeningFrag extends Fragment {
     //firebase
 
     int POINTS = 0;
+    int ADS = 0;
 
     // Declare a MediaPlayer object reference
     MediaPlayer mp,mp2,mediaPlayer;
@@ -105,6 +112,7 @@ public class ListeningFrag extends Fragment {
     private FirebaseFirestore db;
 
     private int totalPoints;
+    private int totalAds;
 
     private String loggedEmail;
 
@@ -116,21 +124,9 @@ public class ListeningFrag extends Fragment {
         view = inflater.inflate(R.layout.fragment_listening, container, false);
 
         //assign IDs
-        playbtn=view.findViewById(R.id.play_pause_button);
-        seekBar=view.findViewById(R.id.seekbar);
-        q_pic=view.findViewById(R.id.q_pic);
-        linearLayout=view.findViewById(R.id.quizLay);
-        lottieAnimationView=view.findViewById(R.id.wrong_anim);
-        show_score=view.findViewById(R.id.score_tv);
-        time_remaining=view.findViewById(R.id.time_remaining);
-        total_time=view.findViewById(R.id.total_time);
-        song_title=view.findViewById(R.id.song_title);
-        listView=view.findViewById(R.id.upComingList);
-        databaseHelper = new DatabaseHelper(requireContext());
-        firebaseAuth = FirebaseAuth.getInstance();
-        currentUser = firebaseAuth.getCurrentUser();
-        firebaseAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        assignIds();
+
+        loadFullscreenAd();
 
 
         if (currentUser == null) {
@@ -229,6 +225,24 @@ public class ListeningFrag extends Fragment {
 
 
         return view;
+    }
+
+    private void assignIds() {
+        playbtn=view.findViewById(R.id.play_pause_button);
+        seekBar=view.findViewById(R.id.seekbar);
+        q_pic=view.findViewById(R.id.q_pic);
+        linearLayout=view.findViewById(R.id.quizLay);
+        lottieAnimationView=view.findViewById(R.id.wrong_anim);
+        show_score=view.findViewById(R.id.score_tv);
+        time_remaining=view.findViewById(R.id.time_remaining);
+        total_time=view.findViewById(R.id.total_time);
+        song_title=view.findViewById(R.id.song_title);
+        listView=view.findViewById(R.id.upComingList);
+        databaseHelper = new DatabaseHelper(requireContext());
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
+        firebaseAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
     }
 
 
@@ -520,11 +534,23 @@ public class ListeningFrag extends Fragment {
         lottieView.setVisibility(View.VISIBLE);
 
         lottieView.setOnClickListener(v -> {
+
             dialog.dismiss();
-            FragmentManager fragment = requireActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction=fragment.beginTransaction();
-            fragmentTransaction.add(R.id.mainLay,new ListeningMenu());
-            fragmentTransaction.commit();
+
+            if (mInterstitialAd != null) {
+                mInterstitialAd.show(requireActivity());
+                ADS+=1;
+                updatePoints();
+
+            } else {
+
+
+                FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                fragmentTransaction.add(R.id.mainLay,new ListeningMenu());
+                fragmentTransaction.commit();
+            }
+
         });
     }
 
@@ -559,8 +585,11 @@ public class ListeningFrag extends Fragment {
                 DocumentSnapshot documentSnapshot = task.getResult();
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     String pointsString = documentSnapshot.getString("points");
+                    String  adString = documentSnapshot.getString("ad");
                     totalPoints = Integer.parseInt(pointsString);
+                    totalAds = Integer.parseInt(adString);
                     POINTS += totalPoints;
+                    ADS+=totalAds;
                 }
             } else {
                 Toast.makeText(getActivity(), "Failed to retrieve points", Toast.LENGTH_SHORT).show();
@@ -570,8 +599,10 @@ public class ListeningFrag extends Fragment {
 
     private void updatePoints() {
         String updatedPoints = String.valueOf(POINTS);
+        String updatedAds = String.valueOf(ADS);
         Map<String, Object> data = new HashMap<>();
         data.put("points", updatedPoints);
+        data.put("ad", updatedAds);
 
         DocumentReference userRef = db.collection("Users").document(loggedEmail);
 
@@ -584,5 +615,54 @@ public class ListeningFrag extends Fragment {
                 })
                 .addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to update points", Toast.LENGTH_SHORT).show());
     }
+
+
+
+    // loadFullscreenAd method starts here.....
+    InterstitialAd mInterstitialAd;
+
+    private void loadFullscreenAd(){
+
+        //Requesting for a fullscreen Ad
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(requireContext(),getString(R.string.full_screen_ad), adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+
+                        //Fullscreen callback || Requesting again when an ad is shown already
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                // Called when fullscreen content is dismissed.
+                                //User dismissed the previous ad. So we are requesting a new ad here
+                                loadFullscreenAd();
+                                FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                                fragmentTransaction.add(R.id.mainLay,new ListeningMenu());
+                                fragmentTransaction.commit();
+
+
+                            }
+                        }); // FullScreen Callback Ends here
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        mInterstitialAd = null;
+                    }
+                }); // FullScreen Callback Ends here
+    }
+    // loadFullscreenAd method ENDS  here..... >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+    // then call it
+
 
 }

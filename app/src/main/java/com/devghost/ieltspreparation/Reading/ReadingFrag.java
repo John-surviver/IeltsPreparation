@@ -13,6 +13,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -26,6 +27,11 @@ import com.devghost.ieltspreparation.Models.DatabaseHelper;
 import com.devghost.ieltspreparation.Home;
 import com.devghost.ieltspreparation.Models.Question;
 import com.devghost.ieltspreparation.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -62,6 +68,7 @@ public class ReadingFrag extends Fragment {
     //firebase
 
     int POINTS = 0;
+    int ADS = 0;
     View view;
     MediaPlayer mp,mp2;
     ScrollView scrollView;
@@ -76,6 +83,7 @@ public class ReadingFrag extends Fragment {
     private FirebaseFirestore db;
 
     private int totalPoints;
+    private int totalAds;
 
     private String loggedEmail;
 
@@ -87,20 +95,13 @@ public class ReadingFrag extends Fragment {
         view = inflater.inflate(R.layout.fragment_reading, container, false);
 
 
-        q_pic=view.findViewById(R.id.q_pic2);
-        linearLayout=view.findViewById(R.id.quizLay2);
-        lottieAnimationView=view.findViewById(R.id.wrong_anim2);
-        show_score=view.findViewById(R.id.score_tv2);
-        main_Q_tv=view.findViewById(R.id.main_Q_tv);
-        title_name_tv=view.findViewById(R.id.title_name_tv);
-        readingLay=view.findViewById(R.id.ReadingLay);
-        scrollView=view.findViewById(R.id.scrollView2);
-        mp = MediaPlayer.create(requireContext(), R.raw.rightanswer);
-        mp2 = MediaPlayer.create(requireContext(), R.raw.wronganswer);
-        databaseHelper = new DatabaseHelper(requireContext());
-        firebaseAuth = FirebaseAuth.getInstance();
-        currentUser = firebaseAuth.getCurrentUser();
-        db = FirebaseFirestore.getInstance();
+
+
+        //assignIds
+        assignIds();
+
+
+        loadFullscreenAd();
 
         if (currentUser == null) {
             Toast.makeText(requireContext(), "Login to Save the Points", Toast.LENGTH_SHORT).show();
@@ -124,7 +125,22 @@ public class ReadingFrag extends Fragment {
         return view;
     }
 
-
+    private void assignIds() {
+        q_pic=view.findViewById(R.id.q_pic2);
+        linearLayout=view.findViewById(R.id.quizLay2);
+        lottieAnimationView=view.findViewById(R.id.wrong_anim2);
+        show_score=view.findViewById(R.id.score_tv2);
+        main_Q_tv=view.findViewById(R.id.main_Q_tv);
+        title_name_tv=view.findViewById(R.id.title_name_tv);
+        readingLay=view.findViewById(R.id.ReadingLay);
+        scrollView=view.findViewById(R.id.scrollView2);
+        mp = MediaPlayer.create(requireContext(), R.raw.rightanswer);
+        mp2 = MediaPlayer.create(requireContext(), R.raw.wronganswer);
+        databaseHelper = new DatabaseHelper(requireContext());
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+    }
 
 
     private void loadQuestions() {
@@ -299,11 +315,24 @@ public class ReadingFrag extends Fragment {
         lottieView.setVisibility(View.VISIBLE);
 
         lottieView.setOnClickListener(v -> {
+
+
+            if (mInterstitialAd != null) {
+                mInterstitialAd.show(requireActivity());
+                ADS +=1;
+                updatePoints();
+
+            } else {
+
+
+                FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                fragmentTransaction.replace(R.id.mainLay,new ReadingMenu());
+                fragmentTransaction.commit();
+            }
             dialog.dismiss();
-            FragmentManager fragment = requireActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction=fragment.beginTransaction();
-            fragmentTransaction.replace(R.id.mainLay,new ReadingMenu());
-            fragmentTransaction.commit();
+
+
         });
     }
 
@@ -324,8 +353,12 @@ public class ReadingFrag extends Fragment {
                 DocumentSnapshot documentSnapshot = task.getResult();
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     String pointsString = documentSnapshot.getString("points");
+                    String AdString = documentSnapshot.getString("ad");
+
                     totalPoints = Integer.parseInt(pointsString);
+                    totalAds = Integer.parseInt(AdString);
                     POINTS += totalPoints;
+                    ADS+=totalAds;
                 }
             } else {
                 Toast.makeText(getActivity(), "Failed to retrieve points", Toast.LENGTH_SHORT).show();
@@ -335,8 +368,10 @@ public class ReadingFrag extends Fragment {
 
     private void updatePoints() {
         String updatedPoints = String.valueOf(POINTS);
+        String updatedAds = String.valueOf(ADS);
         Map<String, Object> data = new HashMap<>();
         data.put("points", updatedPoints);
+        data.put("ad", updatedAds);
 
         DocumentReference userRef = db.collection("Users").document(loggedEmail);
 
@@ -349,5 +384,47 @@ public class ReadingFrag extends Fragment {
                 })
                 .addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to update points", Toast.LENGTH_SHORT).show());
     }
+    // loadFullscreenAd method starts here.....
+    InterstitialAd mInterstitialAd;
+
+    private void loadFullscreenAd(){
+
+        //Requesting for a fullscreen Ad
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(requireContext(),getString(R.string.full_screen_ad), adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+
+                        //Fullscreen callback || Requesting again when an ad is shown already
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                // Called when fullscreen content is dismissed.
+                                //User dismissed the previous ad. So we are requesting a new ad here
+                                loadFullscreenAd();
+
+
+                                FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                                fragmentTransaction.replace(R.id.mainLay,new ReadingMenu());
+                                fragmentTransaction.commit();
+                            }
+                        }); // FullScreen Callback Ends here
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        mInterstitialAd = null;
+                    }
+                }); // FullScreen Callback Ends here
+    }
+    // loadFullscreenAd method ENDS  here..... >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 
 }

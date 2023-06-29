@@ -8,6 +8,7 @@
     tools:context=".Activities.MainActivity"
     >
 
+
    <FrameLayout
        android:id="@+id/scoreLay"
        android:layout_width="match_parent"
@@ -17,6 +18,18 @@
        app:layout_constraintTop_toTopOf="parent" />
 
 
+   <com.google.android.gms.ads.AdView
+       android:id="@+id/adView"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       app:adSize="BANNER"
+       app:adUnitId="@string/BannerAds"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/scoreLay">
+
+   </com.google.android.gms.ads.AdView>
+
    <FrameLayout
        android:id="@+id/mainLay"
        android:layout_width="match_parent"
@@ -25,12 +38,14 @@
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintHorizontal_bias="0.0"
        app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/scoreLay" />
+       app:layout_constraintTop_toBottomOf="@+id/adView" />
 
    <com.google.android.material.bottomnavigation.BottomNavigationView
        android:id="@+id/bottomNavigationView"
        android:layout_width="match_parent"
        android:layout_height="70dp"
+       android:background="@color/tool_bar_color"
+       app:itemIconTint="@drawable/bottom_nav_item_color_selector"
        app:layout_constraintBottom_toBottomOf="parent"
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintHorizontal_bias="0.5"
