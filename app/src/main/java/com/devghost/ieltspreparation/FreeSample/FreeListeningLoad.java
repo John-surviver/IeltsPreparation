@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -28,9 +29,13 @@ public class FreeListeningLoad extends Fragment {
     SeekBar seekBar;
     private boolean isSeeking = false;
     TextView time_remaining,total_time,song_title;
-    public static String AUDIO_URL="";
     public static String TITLE="";
     public static int ID = 0;
+    ImageView nextBtn,prevBtn;
+
+    public static String AUDIO_URL="";
+
+
 
     ProgressBar progressBar,progressBar2;
 
@@ -73,6 +78,8 @@ public class FreeListeningLoad extends Fragment {
 
         song_title.setText(TITLE);
 
+
+
         return view;
     }
 
@@ -86,10 +93,12 @@ public class FreeListeningLoad extends Fragment {
                 pauseAudio();
             } else {
                 playbtn.setImageResource(R.drawable.pause);
+               // playAudio();
                 mediaPlayer.start();
             }
 
         });
+
     }
 
     private void assignIds() {
@@ -101,6 +110,14 @@ public class FreeListeningLoad extends Fragment {
         seekBar=view.findViewById(R.id.seekbar2);
         progressBar=view.findViewById(R.id.loading_progressbar);
         progressBar2=view.findViewById(R.id.audio_progressbar);
+        nextBtn=view.findViewById(R.id.audio_next_button2);
+        prevBtn=view.findViewById(R.id.previous_button2);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        releaseMediaPlayer();
     }
 
     private int lastPlayedPosition = 0; // Variable to store the last played position
@@ -125,6 +142,9 @@ public class FreeListeningLoad extends Fragment {
 
             showLoadingProgressBar();
             progressBar2.setVisibility(View.VISIBLE);
+            playbtn.setVisibility(View.GONE);
+            nextBtn.setVisibility(View.GONE);
+            prevBtn.setVisibility(View.GONE);
 
             mediaPlayer.setOnPreparedListener(mp -> {
               //  Toast.makeText(requireContext(), "Playing now", Toast.LENGTH_SHORT).show();
@@ -138,6 +158,9 @@ public class FreeListeningLoad extends Fragment {
             mediaPlayer.setOnBufferingUpdateListener((mp, percent) -> {
                 int progress = (int) ((float) percent / 100 * progressBar.getMax());
                 progressBar.setProgress(progress);
+                playbtn.setVisibility(View.VISIBLE);
+                nextBtn.setVisibility(View.VISIBLE);
+                prevBtn.setVisibility(View.VISIBLE);
             });
         } catch (IOException e) {
             e.printStackTrace();

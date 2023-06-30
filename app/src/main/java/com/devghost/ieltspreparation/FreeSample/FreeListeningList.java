@@ -123,6 +123,8 @@ public class FreeListeningList extends Fragment {
             String Link = hashMap.get("link");
 
 
+
+
             title.setText(titleValue);
 
             linearLayout.setOnClickListener(view1 -> {
@@ -130,8 +132,8 @@ public class FreeListeningList extends Fragment {
                 if (!idValue.isEmpty()) {
                     try {
                         FreeListeningLoad.ID = Integer.parseInt(idValue);
-                        FreeListeningLoad.AUDIO_URL=Link;
                         FreeListeningLoad.TITLE= titleValue;
+                        FreeListeningLoad.AUDIO_URL=Link;
 
                         FragmentManager fragment = requireActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragment.beginTransaction();

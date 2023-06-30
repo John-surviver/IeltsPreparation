@@ -17,7 +17,7 @@ public class SplashActivity extends AppCompatActivity {
     private static final String LOG_TAG = "SplashActivity";
 
 
-    private static final long COUNTER_TIME = 4;
+    private static final long COUNTER_TIME = 3;
 
     private long secondsRemaining;
 

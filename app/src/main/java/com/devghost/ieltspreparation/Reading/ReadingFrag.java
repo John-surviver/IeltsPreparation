@@ -63,7 +63,7 @@ public class ReadingFrag extends Fragment {
     int wrong = 0;
     TextView show_score,main_Q_tv,title_name_tv;
     ZoomageView q_pic;
-    LinearLayout linearLayout,readingLay;
+    LinearLayout readingLay;
     LottieAnimationView lottieAnimationView;
     //firebase
 
@@ -127,7 +127,7 @@ public class ReadingFrag extends Fragment {
 
     private void assignIds() {
         q_pic=view.findViewById(R.id.q_pic2);
-        linearLayout=view.findViewById(R.id.quizLay2);
+
         lottieAnimationView=view.findViewById(R.id.wrong_anim2);
         show_score=view.findViewById(R.id.score_tv2);
         main_Q_tv=view.findViewById(R.id.main_Q_tv);

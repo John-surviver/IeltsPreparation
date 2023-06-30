@@ -248,6 +248,13 @@ public class ListeningFrag extends Fragment {
 
     //----------------------------------------------
     //Audio Player
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        releaseMediaPlayer();
+    }
+
     private int lastPlayedPosition = 0; // Variable to store the last played position
 
     private void pauseAudio() {

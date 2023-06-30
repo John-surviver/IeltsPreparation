@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         loadHomeFrag();
         loadScoreFrag();
         assignIds();
-       // loadBannerAd();
+        loadBannerAd();
         checkForAppUpdate();
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
