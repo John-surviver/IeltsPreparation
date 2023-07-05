@@ -151,6 +151,14 @@ public class Home extends Fragment {
                     fragmentTransaction.commit();
 
                 }
+                else if ("9".equals(tag)) {
+                    FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                    fragmentTransaction.replace(R.id.mainLay,new Vocabularies());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+
+                }
             });
 
 
@@ -189,6 +197,12 @@ public class Home extends Fragment {
         hashMap.put("tag","4");
         hashMap.put("pic", String.valueOf(R.drawable.writing));
         hashMap.put("title", "Writing");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("tag","9");
+        hashMap.put("pic", String.valueOf(R.drawable.dictionary));
+        hashMap.put("title", "1500+ common\nVocabularies");
         arrayList.add(hashMap);
 
         hashMap = new HashMap<>();

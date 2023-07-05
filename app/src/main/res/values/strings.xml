@@ -48,7 +48,7 @@
     <string name="your_email">Email</string>
     <string name="your_password">Password</string>
     <string name="login">Login</string>
-    <string name="already_have_an_account">Already Have An Account?</string>
+    <string name="already_have_an_account">Dont Have An Account?</string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_up_login">Click to Sign Up / Login</string>
     <string name="to_see_your_progress_please_login">To see your progress please login</string>
