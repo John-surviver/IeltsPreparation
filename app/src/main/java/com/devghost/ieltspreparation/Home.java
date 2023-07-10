@@ -3,7 +3,6 @@ package com.devghost.ieltspreparation;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.devghost.ieltspreparation.Grammar.GrammarFrag;
 import com.devghost.ieltspreparation.Grammar.GrammarList;
 import com.devghost.ieltspreparation.Listening.ListeningMenu;
 import com.devghost.ieltspreparation.Reading.ReadingMenu;
@@ -159,6 +159,16 @@ public class Home extends Fragment {
                     fragmentTransaction.commit();
 
                 }
+
+                else if ("10".equals(tag)) {
+                    GrammarFrag.webLink="file:///android_asset/ielts_score_overview.html";
+                    FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                    fragmentTransaction.replace(R.id.mainLay,new GrammarFrag());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+
+                }
             });
 
 
@@ -229,6 +239,12 @@ public class Home extends Fragment {
         hashMap.put("tag","8");
         hashMap.put("pic", String.valueOf(R.drawable.exam));
         hashMap.put("title", "Mock Test");
+        arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("tag","10");
+        hashMap.put("pic", String.valueOf(R.drawable.score_overview));
+        hashMap.put("title", "IELTS Band Score\nOverview");
         arrayList.add(hashMap);
 
     }

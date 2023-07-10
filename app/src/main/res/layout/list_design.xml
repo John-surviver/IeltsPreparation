@@ -22,7 +22,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             >
+            <TextView
+                android:id="@+id/item_num"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:textSize="20sp"
+                android:fontFamily="serif-monospace"
+                android:textStyle="bold"
+                />
+
             <TextView
                 android:id="@+id/item_title"
                 android:layout_width="match_parent"
@@ -33,6 +44,7 @@
                 android:fontFamily="serif-monospace"
                 android:textStyle="bold"
                 />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

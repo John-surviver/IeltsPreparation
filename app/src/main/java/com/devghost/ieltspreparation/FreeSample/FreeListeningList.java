@@ -26,6 +26,7 @@ import com.devghost.ieltspreparation.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -115,6 +116,7 @@ public class FreeListeningList extends Fragment {
             LayoutInflater layoutInflater = (LayoutInflater) requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
             View myView = layoutInflater.inflate(R.layout.list_design, viewGroup, false);
             TextView title = myView.findViewById(R.id.item_title);
+            TextView num = myView.findViewById(R.id.item_num);
             LinearLayout linearLayout = myView.findViewById(R.id.list_lay);
 
             HashMap<String, String> hashMap = arrayList.get(position);
@@ -124,6 +126,7 @@ public class FreeListeningList extends Fragment {
 
 
 
+            num.setText(MessageFormat.format("{0}", position + 1));
 
             title.setText(titleValue);
 

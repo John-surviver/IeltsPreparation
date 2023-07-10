@@ -15,8 +15,8 @@
     <string name="_30">30%</string>
     <string name="your_progress">YOUR PROGRESS</string>
     <string name="grammar">Grammar</string>
-    <string name="basic_level">Beginner Level</string>
-    <string name="advance_level">Advance Level</string>
+    <string name="basic_level">Beginner</string>
+    <string name="advance_level">Advance</string>
     <string name="speaking">Speaking</string>
     <string name="item_list">Item List</string>
     <string name="song_title">Song Title</string>
@@ -61,7 +61,7 @@
     <string name="ooo">000</string>
     <string name="Extras">Extras</string>
     <string name="free_reading">Free Reading</string>
-    <string name="free_listening">Free Listening</string>
+    <string name="free_listening">Free Listening\nwithout quiz</string>
     <string name="contact_developer">Contact Developer</string>
     <string name="rate_us_txt">Thank You    (click to rate)\nDont forget to rate us on Play Store\nit helps us doing even better</string>
     <string name="log_out">LOG OUT</string>

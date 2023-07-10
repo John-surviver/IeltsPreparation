@@ -29,6 +29,7 @@ import com.devghost.ieltspreparation.Reading.ReadingList1;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -119,6 +120,7 @@ public class WritingList1 extends Fragment {
             LayoutInflater layoutInflater = (LayoutInflater) requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
             View myView = layoutInflater.inflate(R.layout.list_design, viewGroup, false);
             TextView title = myView.findViewById(R.id.item_title);
+            TextView num = myView.findViewById(R.id.item_num);
             LinearLayout linearLayout = myView.findViewById(R.id.list_lay);
 
             HashMap<String, String> hashMap = arrayList.get(position);
@@ -126,13 +128,13 @@ public class WritingList1 extends Fragment {
             String idValue = hashMap.get("id");
 
             title.setText(titleValue);
+            num.setText(MessageFormat.format("{0}", position + 1));
 
             linearLayout.setOnClickListener(view1 -> {
                 assert idValue != null;
                 if (!idValue.isEmpty()) {
                     try {
-                        int number = Integer.parseInt(idValue);
-                        WritingFrag.ID = number;
+                        WritingFrag.ID = Integer.parseInt(idValue);
                         WritingFrag.WRITING_URL="https://codemind.live/apps/ielts/writing/get.php";
                         FragmentManager fragment = requireActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragment.beginTransaction();

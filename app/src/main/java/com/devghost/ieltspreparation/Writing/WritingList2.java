@@ -3,11 +3,6 @@ package com.devghost.ieltspreparation.Writing;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +13,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.devghost.ieltspreparation.R;
-import com.devghost.ieltspreparation.Reading.ReadingFrag;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -114,19 +113,20 @@ public class WritingList2 extends Fragment {
             LayoutInflater layoutInflater = (LayoutInflater) requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
             View myView = layoutInflater.inflate(R.layout.list_design, viewGroup, false);
             TextView title = myView.findViewById(R.id.item_title);
+            TextView num = myView.findViewById(R.id.item_num);
             LinearLayout linearLayout = myView.findViewById(R.id.list_lay);
             HashMap<String, String> hashMap = arrayList.get(position);
             String titleValue = hashMap.get("title");
             String idValue = hashMap.get("id");
 
             title.setText(titleValue);
+            num.setText(MessageFormat.format("{0}", position + 1));
 
             linearLayout.setOnClickListener(view1 -> {
                 assert idValue != null;
                 if (!idValue.isEmpty()) {
                     try {
-                        int number = Integer.parseInt(idValue);
-                        WritingFrag.ID = number;
+                        WritingFrag.ID = Integer.parseInt(idValue);
                         WritingFrag.WRITING_URL="https://codemind.live/apps/ielts/writing/writing2/get.php";
                         FragmentManager fragment = requireActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragment.beginTransaction();

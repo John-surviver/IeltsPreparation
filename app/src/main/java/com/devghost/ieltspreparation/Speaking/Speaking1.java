@@ -3,34 +3,30 @@ package com.devghost.ieltspreparation.Speaking;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.devghost.ieltspreparation.R;
-import com.devghost.ieltspreparation.Reading.ReadingFrag;
-import com.devghost.ieltspreparation.Writing.WritingFrag;
-import com.devghost.ieltspreparation.Writing.WritingList1;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -123,6 +119,7 @@ public class Speaking1 extends Fragment {
             LayoutInflater layoutInflater = (LayoutInflater) requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
             View myView = layoutInflater.inflate(R.layout.list_design, viewGroup, false);
             TextView title = myView.findViewById(R.id.item_title);
+            TextView num = myView.findViewById(R.id.item_num);
             LinearLayout linearLayout = myView.findViewById(R.id.list_lay);
 
             HashMap<String, String> hashMap = arrayList.get(position);
@@ -130,13 +127,13 @@ public class Speaking1 extends Fragment {
             String idValue = hashMap.get("id");
 
             title.setText(titleValue);
+            num.setText(MessageFormat.format("{0}", position + 1));
 
             linearLayout.setOnClickListener(view1 -> {
                 assert idValue != null;
                 if (!idValue.isEmpty()) {
                     try {
-                        int number = Integer.parseInt(idValue);
-                        SpeakingFrag.ID = number;
+                        SpeakingFrag.ID = Integer.parseInt(idValue);
                         SpeakingFrag.SPEAKING_URL=LOAD_LINK;
                         FragmentManager fragment = requireActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragment.beginTransaction();

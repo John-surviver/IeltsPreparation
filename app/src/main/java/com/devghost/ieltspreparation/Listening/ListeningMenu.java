@@ -1,6 +1,5 @@
 package com.devghost.ieltspreparation.Listening;
 
-
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -15,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
@@ -23,19 +23,28 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.devghost.ieltspreparation.FreeSample.FreeListeningList;
 import com.devghost.ieltspreparation.R;
-import com.devghost.ieltspreparation.Tips.TipsMenu;
+
+import org.json.JSONException;
+
+import java.text.MessageFormat;
 
 public class ListeningMenu extends Fragment implements View.OnClickListener {
 
     View view;
-    CardView btn1,btn2,btn3,btn4;
+    CardView btn1, btn2, btn3, btn4;
     LinearLayout menu_lay;
     LottieAnimationView lottieAnimationView;
     private AlertDialog internetDialog;
     ImageView imageView;
     TextView textView;
+
+    TextView beg, inter, adv, free;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,20 +52,48 @@ public class ListeningMenu extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.menu_frag, container, false);
 
-        //assignIds
+        // Assign IDs
         assignIds();
         setClickAble();
 
-        startRotationAnimation(btn1);
-        startRotationAnimation(btn2);
-        startRotationAnimation(btn3);
-        startRotationAnimation(btn4);
+        // Setting animation
+        setAnimation();
+
+        // Get the JSON from the server
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+        String url = "https://codemind.live/apps/ielts/total_number/listening_number.json";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        String beginner = response.getString("beginner");
+                        String intermediate = response.getString("intermediate");
+                        String advanced = response.getString("advanced");
+                        String free = response.getString("free");
+
+                        beg.setText(MessageFormat.format("Total {0}", beginner));
+                        inter.setText(MessageFormat.format("Total {0}", intermediate));
+                        adv.setText(MessageFormat.format("Total {0}", advanced));
+                        ListeningMenu.this.free.setText(MessageFormat.format("Total {0}", free));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show());
+
+        // Add the request to the RequestQueue
+        queue.add(jsonObjectRequest);
 
         imageView.setImageResource(R.drawable.audio);
         textView.setText(R.string.free_listening);
 
         return view;
+    }
 
+    private void setAnimation() {
+        startRotationAnimation(btn1);
+        startRotationAnimation(btn2);
+        startRotationAnimation(btn3);
+        startRotationAnimation(btn4);
     }
 
     private void setClickAble() {
@@ -67,15 +104,18 @@ public class ListeningMenu extends Fragment implements View.OnClickListener {
     }
 
     private void assignIds() {
-        btn1=view.findViewById(R.id.basic_listening_btn);
-        btn2=view.findViewById(R.id.intermediate_listening_btn);
-        btn3=view.findViewById(R.id.advanced_listening_btn);
-        btn4=view.findViewById(R.id.extra_btn);
-        menu_lay =view.findViewById(R.id.listening_menu_lay);
-        lottieAnimationView=view.findViewById(R.id.animationView1);
-        imageView=view.findViewById(R.id.extra_iv);
-        textView=view.findViewById(R.id.extra_tv);
-
+        btn1 = view.findViewById(R.id.basic_listening_btn);
+        btn2 = view.findViewById(R.id.intermediate_listening_btn);
+        btn3 = view.findViewById(R.id.advanced_listening_btn);
+        btn4 = view.findViewById(R.id.extra_btn);
+        menu_lay = view.findViewById(R.id.listening_menu_lay);
+        lottieAnimationView = view.findViewById(R.id.animationView1);
+        imageView = view.findViewById(R.id.extra_iv);
+        textView = view.findViewById(R.id.extra_tv);
+        beg = view.findViewById(R.id.item_count_textview1);
+        inter = view.findViewById(R.id.item_count_textview2);
+        adv = view.findViewById(R.id.item_count_textview3);
+        free = view.findViewById(R.id.item_count_textview4);
     }
 
     @Override
@@ -85,33 +125,28 @@ public class ListeningMenu extends Fragment implements View.OnClickListener {
             return;
         }
 
-
-
-        if(v.getId()==R.id.basic_listening_btn){
-            ListeningListOne.LOAD_LINK=getString(R.string.load_basic_link);
+        if (v.getId() == R.id.basic_listening_btn) {
+            ListeningListOne.LOAD_LINK = getString(R.string.load_basic_link);
             FragmentManager fragment = requireActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction=fragment.beginTransaction();
-            fragmentTransaction.replace(R.id.mainLay,new ListeningListOne());
+            FragmentTransaction fragmentTransaction = fragment.beginTransaction();
+            fragmentTransaction.replace(R.id.mainLay, new ListeningListOne());
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-        }
-        else if (v.getId()==R.id.intermediate_listening_btn) {
-            ListeningListOne.LOAD_LINK=getString(R.string.load_intermediate_link);
+        } else if (v.getId() == R.id.intermediate_listening_btn) {
+            ListeningListOne.LOAD_LINK = getString(R.string.load_intermediate_link);
             FragmentManager fragment = requireActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction=fragment.beginTransaction();
-            fragmentTransaction.replace(R.id.mainLay,new ListeningListOne());
+            FragmentTransaction fragmentTransaction = fragment.beginTransaction();
+            fragmentTransaction.replace(R.id.mainLay, new ListeningListOne());
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-        }
-        else if (v.getId()==R.id.advanced_listening_btn) {
-            ListeningListOne.LOAD_LINK=getString(R.string.load_advanced_link);
+        } else if (v.getId() == R.id.advanced_listening_btn) {
+            ListeningListOne.LOAD_LINK = getString(R.string.load_advanced_link);
             FragmentManager fragment = requireActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction=fragment.beginTransaction();
-            fragmentTransaction.replace(R.id.mainLay,new ListeningListOne());
+            FragmentTransaction fragmentTransaction = fragment.beginTransaction();
+            fragmentTransaction.replace(R.id.mainLay, new ListeningListOne());
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-        }
-        else if (v.getId()==R.id.extra_btn) {
+        } else if (v.getId() == R.id.extra_btn) {
             FragmentManager fragment = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragment.beginTransaction();
             fragmentTransaction.replace(R.id.mainLay, new FreeListeningList());
@@ -132,9 +167,7 @@ public class ListeningMenu extends Fragment implements View.OnClickListener {
         return false;
     }
 
-
     private void showNoInternetDialog() {
-
         menu_lay.setVisibility(View.GONE);
         lottieAnimationView.setVisibility(View.VISIBLE);
 
@@ -142,7 +175,6 @@ public class ListeningMenu extends Fragment implements View.OnClickListener {
         new Handler().postDelayed(() -> {
             lottieAnimationView.setVisibility(View.GONE);
             menu_lay.setVisibility(View.VISIBLE);
-
 
             if (internetDialog == null || !internetDialog.isShowing()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -153,7 +185,6 @@ public class ListeningMenu extends Fragment implements View.OnClickListener {
                 internetDialog = builder.create();
                 internetDialog.show();
             }
-
         }, SPLASH_DISPLAY_LENGTH);
     }
 
@@ -167,7 +198,7 @@ public class ListeningMenu extends Fragment implements View.OnClickListener {
 
     private void startRotationAnimation(View view) {
         ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(view, "rotation", 0f, 360f);
-        rotationAnimator.setDuration(2000); // Duration of 2 seconds
+        rotationAnimator.setDuration(1000); // Duration of 2 seconds
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(rotationAnimator);
@@ -177,9 +208,6 @@ public class ListeningMenu extends Fragment implements View.OnClickListener {
         new Handler().postDelayed(() -> {
             animatorSet.cancel();
             view.setRotation(0f); // Set rotation to 0 to return to the normal position
-        }, 2000);
+        }, 1000);
     }
-
-
 }
-

@@ -3,11 +3,6 @@ package com.devghost.ieltspreparation.Tips;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.devghost.ieltspreparation.Grammar.GrammarFrag;
-import com.devghost.ieltspreparation.Grammar.GrammarList;
 import com.devghost.ieltspreparation.R;
 
 import java.util.ArrayList;
@@ -100,6 +98,12 @@ public class TipsMenu extends Fragment {
     }
 
     private void createTable() {
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "key factors that can influence IELTS score");
+        hashMap.put("link","file:///android_asset/keyfactor_influence.html");
+        arrayList.add(hashMap);
+
         hashMap = new HashMap<>();
         hashMap.put("title", "Graph Writing");
         hashMap.put("link","file:///android_asset/graph_writing.html");
@@ -129,6 +133,12 @@ public class TipsMenu extends Fragment {
         hashMap.put("title", "Speaking Tips");
         hashMap.put("link","file:///android_asset/speaking.html");
         arrayList.add(hashMap);
+
+        hashMap = new HashMap<>();
+        hashMap.put("title", "10 rules for paraphrasing sentences effectively");
+        hashMap.put("link","file:///android_asset/paraphrasing.html");
+        arrayList.add(hashMap);
+
 
 
     }

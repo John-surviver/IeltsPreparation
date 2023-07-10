@@ -34,6 +34,7 @@ public class ReadingMenu extends Fragment implements View.OnClickListener {
     private AlertDialog internetDialog;
     ImageView imageView;
     TextView textView;
+    TextView beg, inter, adv, free;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +54,10 @@ public class ReadingMenu extends Fragment implements View.OnClickListener {
 
         imageView.setImageResource(R.drawable.free_reading);
         textView.setText(R.string.free_reading);
+        beg.setText("10");
+        inter.setText("9");
+        adv.setText("3");
+        free.setText("16");
 
 
 
@@ -90,6 +95,10 @@ public class ReadingMenu extends Fragment implements View.OnClickListener {
         lottieAnimationView=view.findViewById(R.id.animationView1);
         imageView=view.findViewById(R.id.extra_iv);
         textView=view.findViewById(R.id.extra_tv);
+        beg = view.findViewById(R.id.item_count_textview1);
+        inter = view.findViewById(R.id.item_count_textview2);
+        adv = view.findViewById(R.id.item_count_textview3);
+        free = view.findViewById(R.id.item_count_textview4);
 
     }
 

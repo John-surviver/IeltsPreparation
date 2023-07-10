@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style type="text/css">
+        .lf-progress {
+            -webkit-appearance: none;
+            -moz-apperance: none;
+            width: 100%;
+            /* margin: 0 10px; */
+            height: 4px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .lf-progress:focus {
+            outline: none;
+            border: none;
+        }
+
+        .lf-progress::-moz-range-track {
+            cursor: pointer;
+            background: none;
+            border: none;
+            outline: none;
+        }
+
+        .lf-progress::-webkit-slider-thumb {
+            -webkit-appearance: none !important;
+            height: 13px;
+            width: 13px;
+            border: 0;
+            border-radius: 50%;
+            background: #0fccce;
+            cursor: pointer;
+        }
+
+        .lf-progress::-moz-range-thumb {
+            -moz-appearance: none !important;
+            height: 13px;
+            width: 13px;
+            border: 0;
+            border-radius: 50%;
+            background: #0fccce;
+            cursor: pointer;
+        }
+
+        .lf-progress::-ms-track {
+            width: 100%;
+            height: 3px;
+            cursor: pointer;
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+        }
+
+        .lf-progress::-ms-fill-lower {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .lf-progress::-ms-fill-upper {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .lf-progress::-ms-thumb {
+            border: 0;
+            height: 15px;
+            width: 15px;
+            border-radius: 50%;
+            background: #0fccce;
+            cursor: pointer;
+        }
+
+        .lf-progress:focus::-ms-fill-lower {
+            background: #ccc;
+        }
+
+        .lf-progress:focus::-ms-fill-upper {
+            background: #ccc;
+        }
+
+        .lf-player-container :focus {
+            outline: 0;
+        }
+
+        .lf-popover {
+            position: relative;
+        }
+
+        .lf-popover-content {
+            display: inline-block;
+            position: absolute;
+            opacity: 1;
+            visibility: visible;
+            transform: translate(0, -10px);
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+            transition: all 0.3s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+        }
+
+        .lf-popover-content.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(0, 0px);
+        }
+
+        .lf-player-btn-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .lf-player-btn {
+            cursor: pointer;
+            fill: #999;
+            width: 14px;
+        }
+
+        .lf-player-btn.active {
+            fill: #555;
+        }
+
+        .lf-popover {
+            position: relative;
+        }
+
+        .lf-popover-content {
+            display: inline-block;
+            position: absolute;
+            background-color: #ffffff;
+            opacity: 1;
+            transform: translate(0, -10px);
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+            transition: all 0.3s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+            padding: 10px;
+        }
+
+        .lf-popover-content.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(0, 0px);
+        }
+
+        .lf-arrow {
+            position: absolute;
+            z-index: -1;
+            content: '';
+            bottom: -9px;
+            border-style: solid;
+            border-width: 10px 10px 0px 10px;
+        }
+
+        .lf-left-align,
+        .lf-left-align .lfarrow {
+            left: 0;
+            right: unset;
+        }
+
+        .lf-right-align,
+        .lf-right-align .lf-arrow {
+            right: 0;
+            left: unset;
+        }
+
+        .lf-text-input {
+            border: 1px #ccc solid;
+            border-radius: 5px;
+            padding: 3px;
+            width: 60px;
+            margin: 0;
+        }
+
+        .lf-color-picker {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            height: 90px;
+        }
+
+        .lf-color-selectors {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .lf-color-component {
+            display: flex;
+            flex-direction: row;
+            font-size: 12px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lf-color-component strong {
+            width: 40px;
+        }
+
+        .lf-color-component input[type='range'] {
+            margin: 0 0 0 10px;
+        }
+
+        .lf-color-component input[type='number'] {
+            width: 50px;
+            margin: 0 0 0 10px;
+        }
+
+        .lf-color-preview {
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 5px;
+        }
+
+        .lf-preview {
+            height: 60px;
+            width: 60px;
+        }
+
+        .lf-popover-snapshot {
+            width: 150px;
+        }
+
+        .lf-popover-snapshot h5 {
+            margin: 5px 0 10px 0;
+            font-size: 0.75rem;
+        }
+
+        .lf-popover-snapshot a {
+            display: block;
+            text-decoration: none;
+        }
+
+        .lf-popover-snapshot a:before {
+            content: '⥼';
+            margin-right: 5px;
+        }
+
+        .lf-popover-snapshot .lf-note {
+            display: block;
+            margin-top: 10px;
+            color: #999;
+        }
+
+        .lf-player-controls>div {
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+
+        .lf-player-controls>div:first-child {
+            margin-left: 0px;
+        }
+
+        .lf-player-controls>div:last-child {
+            margin-right: 0px;
+        }
+    </style>
+    <style id="_goober">
+        @keyframes go2264125279 {
+            from {
+                transform: scale(0) rotate(45deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(45deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go3020080000 {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go463499852 {
+            from {
+                transform: scale(0) rotate(90deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(90deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go1268368563 {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes go1310225428 {
+            from {
+                transform: scale(0) rotate(45deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(45deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go651618207 {
+            0% {
+                height: 0;
+                width: 0;
+                opacity: 0;
+            }
+
+            40% {
+                height: 0;
+                width: 6px;
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 1;
+                height: 10px;
+            }
+        }
+
+        @keyframes go901347462 {
+            from {
+                transform: scale(0.6);
+                opacity: 0.4;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .go4109123758 {
+            z-index: 9999;
+        }
+
+        .go4109123758>* {
+            pointer-events: auto;
+        }
+
+        @keyframes go2264125279 {
+            from {
+                transform: scale(0) rotate(45deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(45deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go3020080000 {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go463499852 {
+            from {
+                transform: scale(0) rotate(90deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(90deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go1268368563 {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes go1310225428 {
+            from {
+                transform: scale(0) rotate(45deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(45deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go651618207 {
+            0% {
+                height: 0;
+                width: 0;
+                opacity: 0;
+            }
+
+            40% {
+                height: 0;
+                width: 6px;
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 1;
+                height: 10px;
+            }
+        }
+
+        @keyframes go901347462 {
+            from {
+                transform: scale(0.6);
+                opacity: 0.4;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .go4109123758 {
+            z-index: 9999;
+        }
+
+        .go4109123758>* {
+            pointer-events: auto;
+        }
+
+        @keyframes go2264125279 {
+            from {
+                transform: scale(0) rotate(45deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(45deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go3020080000 {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go463499852 {
+            from {
+                transform: scale(0) rotate(90deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(90deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go1268368563 {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes go1310225428 {
+            from {
+                transform: scale(0) rotate(45deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(45deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go651618207 {
+            0% {
+                height: 0;
+                width: 0;
+                opacity: 0;
+            }
+
+            40% {
+                height: 0;
+                width: 6px;
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 1;
+                height: 10px;
+            }
+        }
+
+        @keyframes go901347462 {
+            from {
+                transform: scale(0.6);
+                opacity: 0.4;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .go4109123758 {
+            z-index: 9999;
+        }
+
+        .go4109123758>* {
+            pointer-events: auto;
+        }
+
+        @keyframes go2264125279 {
+            from {
+                transform: scale(0) rotate(45deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(45deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go3020080000 {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go463499852 {
+            from {
+                transform: scale(0) rotate(90deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(90deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go1268368563 {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes go1310225428 {
+            from {
+                transform: scale(0) rotate(45deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(45deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes go651618207 {
+            0% {
+                height: 0;
+                width: 0;
+                opacity: 0;
+            }
+
+            40% {
+                height: 0;
+                width: 6px;
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 1;
+                height: 10px;
+            }
+        }
+
+        @keyframes go901347462 {
+            from {
+                transform: scale(0.6);
+                opacity: 0.4;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .go4109123758 {
+            z-index: 9999;
+        }
+
+        .go4109123758>* {
+            pointer-events: auto;
+        }
+    </style>
+    <style type="text/css">
+        .lf-progress {
+            -webkit-appearance: none;
+            -moz-apperance: none;
+            width: 100%;
+            /* margin: 0 10px; */
+            height: 4px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .lf-progress:focus {
+            outline: none;
+            border: none;
+        }
+
+        .lf-progress::-moz-range-track {
+            cursor: pointer;
+            background: none;
+            border: none;
+            outline: none;
+        }
+
+        .lf-progress::-webkit-slider-thumb {
+            -webkit-appearance: none !important;
+            height: 13px;
+            width: 13px;
+            border: 0;
+            border-radius: 50%;
+            background: #0fccce;
+            cursor: pointer;
+        }
+
+        .lf-progress::-moz-range-thumb {
+            -moz-appearance: none !important;
+            height: 13px;
+            width: 13px;
+            border: 0;
+            border-radius: 50%;
+            background: #0fccce;
+            cursor: pointer;
+        }
+
+        .lf-progress::-ms-track {
+            width: 100%;
+            height: 3px;
+            cursor: pointer;
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+        }
+
+        .lf-progress::-ms-fill-lower {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .lf-progress::-ms-fill-upper {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .lf-progress::-ms-thumb {
+            border: 0;
+            height: 15px;
+            width: 15px;
+            border-radius: 50%;
+            background: #0fccce;
+            cursor: pointer;
+        }
+
+        .lf-progress:focus::-ms-fill-lower {
+            background: #ccc;
+        }
+
+        .lf-progress:focus::-ms-fill-upper {
+            background: #ccc;
+        }
+
+        .lf-player-container :focus {
+            outline: 0;
+        }
+
+        .lf-popover {
+            position: relative;
+        }
+
+        .lf-popover-content {
+            display: inline-block;
+            position: absolute;
+            opacity: 1;
+            visibility: visible;
+            transform: translate(0, -10px);
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+            transition: all 0.3s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+        }
+
+        .lf-popover-content.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(0, 0px);
+        }
+
+        .lf-player-btn-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .lf-player-btn {
+            cursor: pointer;
+            fill: #999;
+            width: 14px;
+        }
+
+        .lf-player-btn.active {
+            fill: #555;
+        }
+
+        .lf-popover {
+            position: relative;
+        }
+
+        .lf-popover-content {
+            display: inline-block;
+            position: absolute;
+            background-color: #ffffff;
+            opacity: 1;
+            transform: translate(0, -10px);
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+            transition: all 0.3s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+            padding: 10px;
+        }
+
+        .lf-popover-content.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(0, 0px);
+        }
+
+        .lf-arrow {
+            position: absolute;
+            z-index: -1;
+            content: '';
+            bottom: -9px;
+            border-style: solid;
+            border-width: 10px 10px 0px 10px;
+        }
+
+        .lf-left-align,
+        .lf-left-align .lfarrow {
+            left: 0;
+            right: unset;
+        }
+
+        .lf-right-align,
+        .lf-right-align .lf-arrow {
+            right: 0;
+            left: unset;
+        }
+
+        .lf-text-input {
+            border: 1px #ccc solid;
+            border-radius: 5px;
+            padding: 3px;
+            width: 60px;
+            margin: 0;
+        }
+
+        .lf-color-picker {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            height: 90px;
+        }
+
+        .lf-color-selectors {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .lf-color-component {
+            display: flex;
+            flex-direction: row;
+            font-size: 12px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lf-color-component strong {
+            width: 40px;
+        }
+
+        .lf-color-component input[type='range'] {
+            margin: 0 0 0 10px;
+        }
+
+        .lf-color-component input[type='number'] {
+            width: 50px;
+            margin: 0 0 0 10px;
+        }
+
+        .lf-color-preview {
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 5px;
+        }
+
+        .lf-preview {
+            height: 60px;
+            width: 60px;
+        }
+
+        .lf-popover-snapshot {
+            width: 150px;
+        }
+
+        .lf-popover-snapshot h5 {
+            margin: 5px 0 10px 0;
+            font-size: 0.75rem;
+        }
+
+        .lf-popover-snapshot a {
+            display: block;
+            text-decoration: none;
+        }
+
+        .lf-popover-snapshot a:before {
+            content: '⥼';
+            margin-right: 5px;
+        }
+
+        .lf-popover-snapshot .lf-note {
+            display: block;
+            margin-top: 10px;
+            color: #999;
+        }
+
+        .lf-player-controls>div {
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+
+        .lf-player-controls>div:first-child {
+            margin-left: 0px;
+        }
+
+        .lf-player-controls>div:last-child {
+            margin-right: 0px;
+        }
+    </style>
+    <style type="text/css">
+        .lf-progress {
+            -webkit-appearance: none;
+            -moz-apperance: none;
+            width: 100%;
+            /* margin: 0 10px; */
+            height: 4px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .lf-progress:focus {
+            outline: none;
+            border: none;
+        }
+
+        .lf-progress::-moz-range-track {
+            cursor: pointer;
+            background: none;
+            border: none;
+            outline: none;
+        }
+
+        .lf-progress::-webkit-slider-thumb {
+            -webkit-appearance: none !important;
+            height: 13px;
+            width: 13px;
+            border: 0;
+            border-radius: 50%;
+            background: #0fccce;
+            cursor: pointer;
+        }
+
+        .lf-progress::-moz-range-thumb {
+            -moz-appearance: none !important;
+            height: 13px;
+            width: 13px;
+            border: 0;
+            border-radius: 50%;
+            background: #0fccce;
+            cursor: pointer;
+        }
+
+        .lf-progress::-ms-track {
+            width: 100%;
+            height: 3px;
+            cursor: pointer;
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+        }
+
+        .lf-progress::-ms-fill-lower {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .lf-progress::-ms-fill-upper {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .lf-progress::-ms-thumb {
+            border: 0;
+            height: 15px;
+            width: 15px;
+            border-radius: 50%;
+            background: #0fccce;
+            cursor: pointer;
+        }
+
+        .lf-progress:focus::-ms-fill-lower {
+            background: #ccc;
+        }
+
+        .lf-progress:focus::-ms-fill-upper {
+            background: #ccc;
+        }
+
+        .lf-player-container :focus {
+            outline: 0;
+        }
+
+        .lf-popover {
+            position: relative;
+        }
+
+        .lf-popover-content {
+            display: inline-block;
+            position: absolute;
+            opacity: 1;
+            visibility: visible;
+            transform: translate(0, -10px);
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+            transition: all 0.3s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+        }
+
+        .lf-popover-content.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(0, 0px);
+        }
+
+        .lf-player-btn-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .lf-player-btn {
+            cursor: pointer;
+            fill: #999;
+            width: 14px;
+        }
+
+        .lf-player-btn.active {
+            fill: #555;
+        }
+
+        .lf-popover {
+            position: relative;
+        }
+
+        .lf-popover-content {
+            display: inline-block;
+            position: absolute;
+            background-color: #ffffff;
+            opacity: 1;
+            transform: translate(0, -10px);
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+            transition: all 0.3s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+            padding: 10px;
+        }
+
+        .lf-popover-content.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(0, 0px);
+        }
+
+        .lf-arrow {
+            position: absolute;
+            z-index: -1;
+            content: '';
+            bottom: -9px;
+            border-style: solid;
+            border-width: 10px 10px 0px 10px;
+        }
+
+        .lf-left-align,
+        .lf-left-align .lfarrow {
+            left: 0;
+            right: unset;
+        }
+
+        .lf-right-align,
+        .lf-right-align .lf-arrow {
+            right: 0;
+            left: unset;
+        }
+
+        .lf-text-input {
+            border: 1px #ccc solid;
+            border-radius: 5px;
+            padding: 3px;
+            width: 60px;
+            margin: 0;
+        }
+
+        .lf-color-picker {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            height: 90px;
+        }
+
+        .lf-color-selectors {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .lf-color-component {
+            display: flex;
+            flex-direction: row;
+            font-size: 12px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lf-color-component strong {
+            width: 40px;
+        }
+
+        .lf-color-component input[type='range'] {
+            margin: 0 0 0 10px;
+        }
+
+        .lf-color-component input[type='number'] {
+            width: 50px;
+            margin: 0 0 0 10px;
+        }
+
+        .lf-color-preview {
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 5px;
+        }
+
+        .lf-preview {
+            height: 60px;
+            width: 60px;
+        }
+
+        .lf-popover-snapshot {
+            width: 150px;
+        }
+
+        .lf-popover-snapshot h5 {
+            margin: 5px 0 10px 0;
+            font-size: 0.75rem;
+        }
+
+        .lf-popover-snapshot a {
+            display: block;
+            text-decoration: none;
+        }
+
+        .lf-popover-snapshot a:before {
+            content: '⥼';
+            margin-right: 5px;
+        }
+
+        .lf-popover-snapshot .lf-note {
+            display: block;
+            margin-top: 10px;
+            color: #999;
+        }
+
+        .lf-player-controls>div {
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+
+        .lf-player-controls>div:first-child {
+            margin-left: 0px;
+        }
+
+        .lf-player-controls>div:last-child {
+            margin-right: 0px;
+        }
+    </style>
+    <style type="text/css">
+        .lf-progress {
+            -webkit-appearance: none;
+            -moz-apperance: none;
+            width: 100%;
+            /* margin: 0 10px; */
+            height: 4px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .lf-progress:focus {
+            outline: none;
+            border: none;
+        }
+
+        .lf-progress::-moz-range-track {
+            cursor: pointer;
+            background: none;
+            border: none;
+            outline: none;
+        }
+
+        .lf-progress::-webkit-slider-thumb {
+            -webkit-appearance: none !important;
+            height: 13px;
+            width: 13px;
+            border: 0;
+            border-radius: 50%;
+            background: #0fccce;
+            cursor: pointer;
+        }
+
+        .lf-progress::-moz-range-thumb {
+            -moz-appearance: none !important;
+            height: 13px;
+            width: 13px;
+            border: 0;
+            border-radius: 50%;
+            background: #0fccce;
+            cursor: pointer;
+        }
+
+        .lf-progress::-ms-track {
+            width: 100%;
+            height: 3px;
+            cursor: pointer;
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+        }
+
+        .lf-progress::-ms-fill-lower {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .lf-progress::-ms-fill-upper {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .lf-progress::-ms-thumb {
+            border: 0;
+            height: 15px;
+            width: 15px;
+            border-radius: 50%;
+            background: #0fccce;
+            cursor: pointer;
+        }
+
+        .lf-progress:focus::-ms-fill-lower {
+            background: #ccc;
+        }
+
+        .lf-progress:focus::-ms-fill-upper {
+            background: #ccc;
+        }
+
+        .lf-player-container :focus {
+            outline: 0;
+        }
+
+        .lf-popover {
+            position: relative;
+        }
+
+        .lf-popover-content {
+            display: inline-block;
+            position: absolute;
+            opacity: 1;
+            visibility: visible;
+            transform: translate(0, -10px);
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+            transition: all 0.3s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+        }
+
+        .lf-popover-content.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(0, 0px);
+        }
+
+        .lf-player-btn-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .lf-player-btn {
+            cursor: pointer;
+            fill: #999;
+            width: 14px;
+        }
+
+        .lf-player-btn.active {
+            fill: #555;
+        }
+
+        .lf-popover {
+            position: relative;
+        }
+
+        .lf-popover-content {
+            display: inline-block;
+            position: absolute;
+            background-color: #ffffff;
+            opacity: 1;
+            transform: translate(0, -10px);
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+            transition: all 0.3s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+            padding: 10px;
+        }
+
+        .lf-popover-content.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(0, 0px);
+        }
+
+        .lf-arrow {
+            position: absolute;
+            z-index: -1;
+            content: '';
+            bottom: -9px;
+            border-style: solid;
+            border-width: 10px 10px 0px 10px;
+        }
+
+        .lf-left-align,
+        .lf-left-align .lfarrow {
+            left: 0;
+            right: unset;
+        }
+
+        .lf-right-align,
+        .lf-right-align .lf-arrow {
+            right: 0;
+            left: unset;
+        }
+
+        .lf-text-input {
+            border: 1px #ccc solid;
+            border-radius: 5px;
+            padding: 3px;
+            width: 60px;
+            margin: 0;
+        }
+
+        .lf-color-picker {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            height: 90px;
+        }
+
+        .lf-color-selectors {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .lf-color-component {
+            display: flex;
+            flex-direction: row;
+            font-size: 12px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lf-color-component strong {
+            width: 40px;
+        }
+
+        .lf-color-component input[type='range'] {
+            margin: 0 0 0 10px;
+        }
+
+        .lf-color-component input[type='number'] {
+            width: 50px;
+            margin: 0 0 0 10px;
+        }
+
+        .lf-color-preview {
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 5px;
+        }
+
+        .lf-preview {
+            height: 60px;
+            width: 60px;
+        }
+
+        .lf-popover-snapshot {
+            width: 150px;
+        }
+
+        .lf-popover-snapshot h5 {
+            margin: 5px 0 10px 0;
+            font-size: 0.75rem;
+        }
+
+        .lf-popover-snapshot a {
+            display: block;
+            text-decoration: none;
+        }
+
+        .lf-popover-snapshot a:before {
+            content: '⥼';
+            margin-right: 5px;
+        }
+
+        .lf-popover-snapshot .lf-note {
+            display: block;
+            margin-top: 10px;
+            color: #999;
+        }
+
+        .lf-player-controls>div {
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+
+        .lf-player-controls>div:first-child {
+            margin-left: 0px;
+        }
+
+        .lf-player-controls>div:last-child {
+            margin-right: 0px;
+        }
+    </style>
+</head>
+
+<body data-gr-ext-installed="" data-new-gr-c-s-check-loaded="14.1114.0" spellcheck="false" style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 15pt 0pt;"><span style="font-size:13.999999999999998pt;font-family:'Quattrocento Sans',sans-serif;color:#385623;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Here&apos;s an overview of the band score descriptors for each module:</span></p>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 15pt 0pt;"><span style="font-size:16pt;font-family:'Quattrocento Sans',sans-serif;color:#385623;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Listening and Reading:</span></p>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 9: Expert User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Shows a full understanding of complex ideas and detailed information.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Demonstrates exceptional comprehension skills with accuracy and ease.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 8: Very Good User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Understands a wide range of demanding texts or conversations.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Handles detailed reasoning and inference with few errors.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 7: Good User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Understands the main ideas and specific details in a variety of contexts.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Deals with complex language adequately and independently.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 6: Competent User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Understands the general meaning in familiar situations.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Copes with basic communication in most situations but may make mistakes or misunderstand occasional details.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 5: Modest User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Understands the main points in familiar topics but may struggle with complex language.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Demonstrates some ability to communicate in familiar situations, but errors and misunderstandings are common.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 4: Limited User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Understands basic information and main points on familiar topics.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Uses simple language to communicate but with frequent errors and limited vocabulary.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 3: Extremely Limited User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Understands only isolated words and phrases.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Struggles to comprehend spoken or written language.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 2: Intermittent User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Has great difficulty understanding and responding to spoken or written language.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 1: Non-User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">No ability to use the language beyond a few words.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 0: Did not attempt the test</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">No response or irrelevant response.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:0pt;padding:0pt 0pt 15pt 0pt;"><span style="font-size:16pt;font-family:'Quattrocento Sans',sans-serif;color:#385623;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Writing:</span></p>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 9: Expert User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Shows a high level of proficiency in organizing and presenting ideas.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Demonstrates a wide range of vocabulary and accurate use of grammar and punctuation.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 8: Very Good User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Addresses the task effectively with well-developed ideas.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Uses a range of vocabulary and grammatical structures with some errors.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 7: Good User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Presents a clear position with relevant ideas.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Uses a sufficient range of vocabulary and grammar but may have occasional errors.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 6: Competent User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Addresses the task adequately with some supporting ideas.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Demonstrates a basic range of vocabulary and grammar, but errors are noticeable.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 5: Modest User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Presents a position but may lack coherence and development.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Uses basic vocabulary and grammar with frequent errors and limited range.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 4: Limited User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Attempts to address the task but lacks coherence and clarity.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Uses simple language with frequent errors and limited vocabulary.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 3: Extremely Limited User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Struggles to present a clear position or support ideas.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Demonstrates minimal control of vocabulary and grammar.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 2: Intermittent User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Has great difficulty in organizing and expressing ideas.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 1: Non-User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">No ability to use the language beyond a few words.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 0: Did not attempt the test</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">No response or irrelevant response.</span></p>
+    </li>
+</ul>
+<p><br></p>
+<p><br></p>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 15pt 0pt;"><span style="font-size:16pt;font-family:'Quattrocento Sans',sans-serif;color:#385623;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Speaking test:</span></p>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 9: Expert User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Shows a full command of the language with accuracy and fluency.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Uses a wide range of vocabulary and natural, idiomatic language.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Speaks with precision, maintaining coherence and cohesion.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 8: Very Good User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Demonstrates effective command of the language.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Shows a wide range of vocabulary and uses it appropriately.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Speaks fluently with occasional inaccuracies.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 7: Good User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Shows good command of the language despite some inaccuracies and occasional misunderstandings.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Uses a sufficient range of vocabulary to communicate effectively.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Maintains coherence and cohesion, with some effort.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 6: Competent User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Generally, uses the language adequately, despite noticeable mistakes and misunderstandings.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Shows some ability to use complex language but with occasional breakdowns in communication.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 5: Modest User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Demonstrates partial command of the language, coping with overall meaning but making frequent errors.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Struggles to maintain coherence and cohesion, especially in longer responses.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 4: Limited User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Conveys basic meaning but with frequent inaccuracies and misunderstandings.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Struggles to use complex language and may rely on simple sentences.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 3: Extremely Limited User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Communicates only with isolated words or memorized phrases.</span></p>
+    </li>
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Makes numerous errors and fails to maintain coherence.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 2: Intermittent User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Has great difficulty understanding and producing spoken language.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 1: Non-User</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">No ability to use the language beyond a few words.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Band 0: Did not attempt the test</span></p>
+<ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;">
+    <li dir="ltr" style="list-style-type:disc;font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1">
+        <p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 0pt 5pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">No response or irrelevant response.</span></p>
+    </li>
+</ul>
+<p dir="ltr" style="line-height:1.2;border-left:solid #d9d9e3 0.5pt;border-right:solid #d9d9e3 0.5pt;border-top:solid #d9d9e3 0.5pt;border-bottom:solid #d9d9e3 0.5pt;margin-top:15pt;margin-bottom:15pt;padding:0pt 0pt 0pt 9pt;"><span style="font-size:12pt;font-family:'Quattrocento Sans',sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:italic;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">It&apos;s important to note that the band scores for each of the four criteria (Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, and Pronunciation) are combined to calculate an overall speaking band score. The band score reflects the examiner&apos;s assessment of your performance based on the specific marking criteria for each band level.</span></p>
+</body>
+
+</html>
