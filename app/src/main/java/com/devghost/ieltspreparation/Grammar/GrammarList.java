@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.devghost.ieltspreparation.R;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -71,6 +72,7 @@ public class GrammarList extends Fragment {
             LayoutInflater layoutInflater = (LayoutInflater) requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
             View myView = layoutInflater.inflate(R.layout.list_design, viewGroup, false);
             TextView title = myView.findViewById(R.id.item_title);
+            TextView number = myView.findViewById(R.id.item_num);
             LinearLayout linearLayout = myView.findViewById(R.id.list_lay);
 
             HashMap<String, String> hashMap = arrayList.get(position);
@@ -78,7 +80,7 @@ public class GrammarList extends Fragment {
             String Link = hashMap.get("link");
 
             title.setText(Title);
-
+            number.setText(MessageFormat.format("{0}", position + 1));
 
 
             linearLayout.setOnClickListener(view1 -> {

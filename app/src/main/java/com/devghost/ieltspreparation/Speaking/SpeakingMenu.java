@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
@@ -20,7 +22,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.devghost.ieltspreparation.R;
+
+import org.json.JSONException;
+
+import java.text.MessageFormat;
 
 
 public class SpeakingMenu extends Fragment implements View.OnClickListener {
@@ -30,6 +40,8 @@ public class SpeakingMenu extends Fragment implements View.OnClickListener {
     LinearLayout menu_lay;
     LottieAnimationView lottieAnimationView;
     private AlertDialog internetDialog;
+    TextView beg, inter, adv, free;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,13 +58,37 @@ public class SpeakingMenu extends Fragment implements View.OnClickListener {
 
         bt4.setVisibility(View.GONE);
 
+        // Get the JSON from the server
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+        String url = "https://codemind.live/apps/ielts/total_number/speaking_number.json";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        String beginner = response.getString("beginner");
+                        String intermediate = response.getString("intermediate");
+                        String advanced = response.getString("advanced");
+                        String free = response.getString("free");
+
+                        beg.setText(MessageFormat.format("Total {0}", beginner));
+                        inter.setText(MessageFormat.format("Total {0}", intermediate));
+                        adv.setText(MessageFormat.format("Total {0}", advanced));
+                       // ListeningMenu.this.free.setText(MessageFormat.format("Total {0}", free));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show());
+
+        // Add the request to the RequestQueue
+        queue.add(jsonObjectRequest);
+
 
 
         return view;
     }
     private void startRotationAnimation(View view) {
         ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(view, "rotation", 0f, 360f);
-        rotationAnimator.setDuration(2000); // Duration of 2 seconds
+        rotationAnimator.setDuration(1000); // Duration of 2 seconds
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(rotationAnimator);
@@ -62,7 +98,7 @@ public class SpeakingMenu extends Fragment implements View.OnClickListener {
         new Handler().postDelayed(() -> {
             animatorSet.cancel();
             view.setRotation(0f); // Set rotation to 0 to return to the normal position
-        }, 2000);
+        }, 1000);
     }
     private void setClickAble() {
         btn1.setOnClickListener(this);
@@ -78,6 +114,10 @@ public class SpeakingMenu extends Fragment implements View.OnClickListener {
         menu_lay =view.findViewById(R.id.listening_menu_lay);
         lottieAnimationView=view.findViewById(R.id.animationView1);
         bt4=view.findViewById(R.id.extra_btn);
+        beg = view.findViewById(R.id.item_count_textview1);
+        inter = view.findViewById(R.id.item_count_textview2);
+        adv = view.findViewById(R.id.item_count_textview3);
+        free = view.findViewById(R.id.item_count_textview4);
 
     }
 

@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.devghost.ieltspreparation.Grammar.GrammarFrag;
 import com.devghost.ieltspreparation.R;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -70,6 +71,7 @@ public class TipsMenu extends Fragment {
             LayoutInflater layoutInflater = (LayoutInflater) requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
             View myView = layoutInflater.inflate(R.layout.list_design, viewGroup, false);
             TextView title = myView.findViewById(R.id.item_title);
+            TextView num = myView.findViewById(R.id.item_num);
             LinearLayout linearLayout = myView.findViewById(R.id.list_lay);
 
             HashMap<String, String> hashMap = arrayList.get(position);
@@ -77,6 +79,7 @@ public class TipsMenu extends Fragment {
             String Link = hashMap.get("link");
 
             title.setText(Title);
+            num.setText(MessageFormat.format("{0}", position + 1));
 
 
 
