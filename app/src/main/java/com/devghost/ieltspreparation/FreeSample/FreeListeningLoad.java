@@ -150,7 +150,7 @@ public class FreeListeningLoad extends Fragment {
               //  Toast.makeText(requireContext(), "Playing now", Toast.LENGTH_SHORT).show();
                 mediaPlayer.seekTo(lastPlayedPosition);
 
-               // hideLoadingProgressBar();
+
                 progressBar2.setVisibility(View.INVISIBLE);
                 updateSeekBar();
             });
@@ -229,10 +229,6 @@ public class FreeListeningLoad extends Fragment {
 
     private void showLoadingProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
-    }
-
-    private void hideLoadingProgressBar() {
-        progressBar.setVisibility(View.GONE);
     }
 
 

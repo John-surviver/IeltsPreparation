@@ -24,7 +24,6 @@ import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.devghost.ieltspreparation.Models.DatabaseHelper;
-import com.devghost.ieltspreparation.Home;
 import com.devghost.ieltspreparation.Models.Question;
 import com.devghost.ieltspreparation.R;
 import com.google.android.gms.ads.AdRequest;
@@ -79,7 +78,6 @@ public class ReadingFrag extends Fragment {
     //--------------------------------------------
 
     private FirebaseUser currentUser;
-    private FirebaseAuth firebaseAuth;
     private FirebaseFirestore db;
 
     private int totalPoints;
@@ -137,7 +135,7 @@ public class ReadingFrag extends Fragment {
         mp = MediaPlayer.create(requireContext(), R.raw.rightanswer);
         mp2 = MediaPlayer.create(requireContext(), R.raw.wronganswer);
         databaseHelper = new DatabaseHelper(requireContext());
-        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
     }
@@ -284,6 +282,7 @@ public class ReadingFrag extends Fragment {
         View view = LayoutInflater.from(requireContext()).inflate(R.layout.lottie_view, null);
         LottieAnimationView lottieView = view.findViewById(R.id.lottie_view);
         TextView textView = view.findViewById(R.id.show_score_tv);
+        Button Close = view.findViewById(R.id.close);
 
         builder.setView(view);
 
@@ -310,12 +309,8 @@ public class ReadingFrag extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
 
-
-        // Start the Lottie animation
-        lottieView.setVisibility(View.VISIBLE);
-
-        lottieView.setOnClickListener(v -> {
-
+        Close.setOnClickListener(v -> {
+            dialog.dismiss();
 
             if (mInterstitialAd != null) {
                 mInterstitialAd.show(requireActivity());
@@ -327,10 +322,32 @@ public class ReadingFrag extends Fragment {
 
                 FragmentManager fragment = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction=fragment.beginTransaction();
-                fragmentTransaction.replace(R.id.mainLay,new ReadingMenu());
+                fragmentTransaction.replace(R.id.mainLay,new ReadingList1());
                 fragmentTransaction.commit();
             }
+        });
+
+
+        // Start the Lottie animation
+        lottieView.setVisibility(View.VISIBLE);
+
+        lottieView.setOnClickListener(v -> {
             dialog.dismiss();
+
+            if (mInterstitialAd != null) {
+                mInterstitialAd.show(requireActivity());
+                ADS +=1;
+                updatePoints();
+
+            } else {
+
+
+                FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                fragmentTransaction.replace(R.id.mainLay,new ReadingList1());
+                fragmentTransaction.commit();
+            }
+
 
 
         });
@@ -355,7 +372,9 @@ public class ReadingFrag extends Fragment {
                     String pointsString = documentSnapshot.getString("points");
                     String AdString = documentSnapshot.getString("ad");
 
+                    assert pointsString != null;
                     totalPoints = Integer.parseInt(pointsString);
+                    assert AdString != null;
                     totalAds = Integer.parseInt(AdString);
                     POINTS += totalPoints;
                     ADS+=totalAds;

@@ -12,7 +12,17 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+    <ProgressBar
+        android:id="@+id/progress_listening"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <RelativeLayout
+        android:visibility="visible"
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,6 +47,17 @@
                 android:text="@string/song_title"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
+            <ProgressBar
+                android:progressTint="#FF5722"
+                android:id="@+id/loading_progressbar2"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:max="100"
+                android:progress="0"
+                 />
         </LinearLayout>
 
         <!-- Playback Controls -->

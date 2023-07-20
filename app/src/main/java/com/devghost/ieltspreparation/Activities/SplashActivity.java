@@ -9,15 +9,14 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.devghost.ieltspreparation.MyApplication;
+import com.airbnb.lottie.LottieAnimationView;
 import com.devghost.ieltspreparation.R;
 
 /** Splash Activity that inflates splash activity xml. */
 public class SplashActivity extends AppCompatActivity {
     private static final String LOG_TAG = "SplashActivity";
-
-
-    private static final long COUNTER_TIME = 4;
+    private static final long COUNTER_TIME = 2;
+    LottieAnimationView animationView;
 
     private long secondsRemaining;
 
@@ -25,6 +24,12 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        animationView=findViewById(R.id.animationView);
+
+        animationView.setSpeed(3.0f);
+
+// Start the animation
+        animationView.playAnimation();
 
         // Create a timer so the SplashActivity will be displayed for a fixed amount of time.
         createTimer();

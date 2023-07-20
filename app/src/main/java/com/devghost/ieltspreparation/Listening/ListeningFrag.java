@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -24,8 +26,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.devghost.ieltspreparation.Models.DatabaseHelper;
@@ -98,7 +98,7 @@ public class ListeningFrag extends Fragment {
     //list view for upcoming questions
     ListView listView;
     ArrayList<HashMap<String,String>> arrayList = new ArrayList<>();
-    HashMap <String,String> hashMap;
+
 
     int NextQuestion=1;
     //----------------------------------------------------
@@ -116,6 +116,11 @@ public class ListeningFrag extends Fragment {
 
     private String loggedEmail;
 
+    //--------------------------------------
+
+    ProgressBar progressBar,progressBar2;
+    ImageView next_btn,previous_btn;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -125,6 +130,9 @@ public class ListeningFrag extends Fragment {
 
         //assign IDs
         assignIds();
+        mediaPlayerCheck();
+        playAudio();
+
 
         loadFullscreenAd();
 
@@ -137,9 +145,6 @@ public class ListeningFrag extends Fragment {
             getPoints();
         }
 
-
-
-
         //load questions
         if (!cachedQuestions.isEmpty()) {
             displayQuestion();
@@ -147,20 +152,6 @@ public class ListeningFrag extends Fragment {
             loadQuestions();
         }
 
-        //audio player check
-        mediaPlayer = new MediaPlayer();
-        playbtn.setOnClickListener(v -> {
-            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                playbtn.setImageResource(R.drawable.ic_play);
-                pauseAudio();
-            } else {
-                playbtn.setImageResource(R.drawable.pause);
-                playAudio();
-            }
-
-        });
-
-        // audio player seekbar
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -187,44 +178,27 @@ public class ListeningFrag extends Fragment {
             playbtn.setImageResource(R.drawable.ic_play);
         });
 
-
         song_title.setText(TITLE);
 
-        // get the json from server
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(requireContext());
-        String url = ADV;
+        return view;
+    }
 
-        // Request a string response from the provided URL.
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
-          //  progressBar.setVisibility(View.GONE);
-            try {
+    private void mediaPlayerCheck() {
+        //audio player check
+        mediaPlayer = new MediaPlayer();
+        playbtn.setOnClickListener(v -> {
 
-                for(int x= 0 ; x<response.length(); x++){
-                    JSONObject jsonObject = response.getJSONObject(x);
-                    String question = jsonObject.getString("NextQuestion");
-
-                    hashMap = new HashMap<>();
-                    hashMap.put("NextQuestion",question);
-                    arrayList.add(hashMap);
-
-
-
-
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                playbtn.setImageResource(R.drawable.ic_play);
+                pauseAudio();
+            } else {
+                playbtn.setImageResource(R.drawable.pause);
+                // playAudio();
+                mediaPlayer.start();
             }
-        }, error -> {
-          //  progressBar.setVisibility(View.GONE);
+
         });
 
-        // Add the request to the RequestQueue.
-        queue.add(jsonArrayRequest);
-
-
-        return view;
     }
 
     private void assignIds() {
@@ -243,6 +217,12 @@ public class ListeningFrag extends Fragment {
         currentUser = firebaseAuth.getCurrentUser();
         firebaseAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        next_btn=view.findViewById(R.id.audio_next_button);
+        previous_btn=view.findViewById(R.id.previous_button);
+        progressBar2=view.findViewById(R.id.loading_progressbar2);
+
+        //-------------------------------------
+        progressBar=view.findViewById(R.id.progress_listening);
     }
 
 
@@ -275,15 +255,36 @@ public class ListeningFrag extends Fragment {
             mediaPlayer.setDataSource(AUDIO_URL);
             mediaPlayer.prepareAsync();
 
+            showLoadingProgressBar();
+            progressBar.setVisibility(View.VISIBLE);
+            playbtn.setVisibility(View.GONE);
+            next_btn.setVisibility(View.GONE);
+            previous_btn.setVisibility(View.GONE);
+
             mediaPlayer.setOnPreparedListener(mp -> {
-                mediaPlayer.seekTo(lastPlayedPosition); // Set the last played position
-                mediaPlayer.start();
+                //  Toast.makeText(requireContext(), "Playing now", Toast.LENGTH_SHORT).show();
+                mediaPlayer.seekTo(lastPlayedPosition);
+
+                // hideLoadingProgressBar();
+                progressBar.setVisibility(View.INVISIBLE);
                 updateSeekBar();
+            });
+
+            mediaPlayer.setOnBufferingUpdateListener((mp, percent) -> {
+                int progress = (int) ((float) percent / 100 * progressBar.getMax());
+                progressBar2.setProgress(progress);
+                playbtn.setVisibility(View.VISIBLE);
+                next_btn.setVisibility(View.VISIBLE);
+                previous_btn.setVisibility(View.VISIBLE);
             });
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(requireContext(), "Error loading audio", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showLoadingProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
     }
 
 
@@ -508,6 +509,7 @@ public class ListeningFrag extends Fragment {
         View view = LayoutInflater.from(requireContext()).inflate(R.layout.lottie_view, null);
         LottieAnimationView lottieView = view.findViewById(R.id.lottie_view);
         TextView textView = view.findViewById(R.id.show_score_tv);
+        Button Close = view.findViewById(R.id.close);
 
 
         builder.setView(view);
@@ -537,6 +539,24 @@ public class ListeningFrag extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
 
+        Close.setOnClickListener(v -> {
+            dialog.dismiss();
+
+            if (mInterstitialAd != null) {
+                mInterstitialAd.show(requireActivity());
+                ADS+=1;
+                updatePoints();
+
+            } else {
+
+
+                FragmentManager fragment = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction=fragment.beginTransaction();
+                fragmentTransaction.replace(R.id.mainLay,new ListeningListOne());
+                fragmentTransaction.commit();
+            }
+        });
+
         // Start the Lottie animation
         lottieView.setVisibility(View.VISIBLE);
 
@@ -554,7 +574,7 @@ public class ListeningFrag extends Fragment {
 
                 FragmentManager fragment = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction=fragment.beginTransaction();
-                fragmentTransaction.add(R.id.mainLay,new ListeningMenu());
+                fragmentTransaction.replace(R.id.mainLay,new ListeningListOne());
                 fragmentTransaction.commit();
             }
 
@@ -593,7 +613,9 @@ public class ListeningFrag extends Fragment {
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     String pointsString = documentSnapshot.getString("points");
                     String  adString = documentSnapshot.getString("ad");
+                    assert pointsString != null;
                     totalPoints = Integer.parseInt(pointsString);
+                    assert adString != null;
                     totalAds = Integer.parseInt(adString);
                     POINTS += totalPoints;
                     ADS+=totalAds;
